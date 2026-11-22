@@ -1,6 +1,6 @@
 ---
 name: wargame
-description: Red versus Blue simulation on a plan or a decision - an adversary agent attacks the plan, a defender agent adapts it, then a synthesis identifies second-order consequences and the breaking point. Use it only when the user writes WARGAME or explicitly asks for an adversarial simulation.
+description: "Red versus Blue simulation on a plan or a decision: an adversary attacks the plan, a defender adapts it, then a synthesis identifies second-order consequences and the breaking point. Use it when the outcome depends on how others will react (competitors, the market, a counterpart) and the stakes are high, or when the user asks for an adversarial simulation: 'how would competitors react?', 'simulate the other side', 'what would they do if we cut prices?', 'come reagirebbe il mercato?', 'simula la controparte'. Keyword: WARGAME."
 argument-hint: "[scenario] [quick]"
 disable-model-invocation: true
 ---

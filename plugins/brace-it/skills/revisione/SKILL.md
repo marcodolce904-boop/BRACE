@@ -1,6 +1,6 @@
 ---
 name: revisione
-description: Rivede le decisioni registrate in .brace/decisioni.md la cui data di revisione è passata, raccoglie gli esiti, confronta previsioni e realtà e misura la calibrazione per livello di confidenza. Usala quando l'utente scrive REVISIONE, chiede di rivedere le decisioni passate o di sapere quanto sono state accurate le sue previsioni.
+description: "Rivede le decisioni registrate in .brace/decisioni.md la cui data di revisione è passata: raccoglie gli esiti, confronta previsioni e realtà e misura la calibrazione per livello di confidenza. Usala quando l'utente vuole riguardare le decisioni passate o sapere quanto sono state accurate le sue previsioni: 'com'è andata con le decisioni?', 'avevo ragione?', 'quali decisioni sono da rivedere?', 'how did my past decisions go?', 'was I right?'. Parola chiave: REVISIONE."
 argument-hint: "[ID decisione | tutte]"
 ---
 

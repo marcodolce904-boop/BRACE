@@ -1,6 +1,6 @@
 ---
 name: review
-description: Reviews the decisions recorded in .brace/decisions.md whose review date has passed, collects the outcomes, compares predictions with reality and measures calibration by confidence level. Use it when the user writes REVIEW, asks to review past decisions or wants to know how accurate their predictions were.
+description: "Reviews the decisions recorded in .brace/decisions.md whose review date has passed: collects the outcomes, compares predictions with reality and measures calibration by confidence level. Use it when the user wants to look back at past decisions or know how accurate their predictions were: 'how did my past decisions go?', 'was I right?', 'which decisions are due for review?', 'com'è andata con le decisioni?', 'avevo ragione?'. Keyword: REVIEW."
 argument-hint: "[decision ID | all]"
 ---
 

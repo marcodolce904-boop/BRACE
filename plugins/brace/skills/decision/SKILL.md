@@ -1,6 +1,6 @@
 ---
 name: decision
-description: Records a decision in the decision log (.brace/decisions.md) with rejected alternatives, rationale, verifiable prediction, confidence and review date. Use it when the user writes DECISION, asks to record or note a choice, or has just made an important decision and agrees to record it.
+description: "Records a decision in the decision log (.brace/decisions.md) with rejected alternatives, rationale, verifiable prediction, confidence and review date. Use it when the user asks to record or note a choice, or has just made an important decision and agrees to record it: 'I've decided to...', 'note this down', 'let's go with X', 'log this decision', 'ho deciso di...', 'segnati questa scelta'. Keyword: DECISION."
 argument-hint: "[decision]"
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: stress-test
-description: Pre-mortem di un piano, una tesi o una decisione - assume che sia fallito e ne ricostruisce le cause, con segnali precoci e contromisure. Usala quando l'utente scrive STRESS TEST, chiede un pre-mortem, vuole sapere come potrebbe fallire un piano o chiede di trovarne i punti deboli.
+description: "Pre-mortem di un piano, una tesi o una decisione: assume che sia già fallito e ne ricostruisce le cause, con segnali precoci e contromisure. Usala quando l'utente vuole sapere come potrebbe fallire un piano o chiede di trovarne i punti deboli: 'come potrebbe andare storto?', 'trova i punti deboli', 'cosa mi sfugge?', 'dove può crollare?', 'how could this go wrong?', 'poke holes in this'. Parole chiave: STRESS TEST, pre-mortem."
 argument-hint: "[piano, tesi o file] [indipendente]"
 ---
 

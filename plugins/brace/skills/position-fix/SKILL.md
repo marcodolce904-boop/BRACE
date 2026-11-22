@@ -1,6 +1,6 @@
 ---
 name: position-fix
-description: Snapshot of the work status (goal, constraints, variables, decisions, open questions, next action) saved to a file and reloaded in later sessions. Use it when the user writes POSITION FIX or STOP, asks to take stock of the situation, or when a long conversation has changed direction several times.
+description: "Snapshot of the work status (goal, constraints, variables, decisions, open questions, next action), saved to a file and reloaded in later sessions. Use it when the user wants to take stock of the situation or pause the work, or when a long conversation has changed direction several times: 'where are we?', 'sum up where we stand', 'let's pick this up tomorrow', 'facciamo il punto', 'riassumi dove siamo'. Keywords: POSITION FIX, PUNTO NAVE, STOP."
 argument-hint: "[optional focus]"
 ---
 

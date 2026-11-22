@@ -1,6 +1,6 @@
 ---
 name: wargame
-description: Simulazione Rosso contro Blu su un piano o una decisione - un agente avversario attacca il piano, un agente difensore lo adatta, poi una sintesi indica conseguenze di secondo ordine e punto di rottura. Usala solo quando l'utente scrive WARGAME o chiede esplicitamente una simulazione avversaria.
+description: "Simulazione Rosso contro Blu su un piano o una decisione: un avversario attacca il piano, un difensore lo adatta, poi una sintesi indica conseguenze di secondo ordine e punto di rottura. Usala quando l'esito dipende da come reagiranno gli altri (concorrenti, mercato, controparte) e la posta in gioco è alta, oppure quando l'utente chiede una simulazione avversaria: 'come reagirebbe il mercato?', 'come reagirebbero i concorrenti?', 'simula la controparte', 'how would competitors react?', 'simulate the other side'. Parola chiave: WARGAME."
 argument-hint: "[scenario] [rapido]"
 disable-model-invocation: true
 ---

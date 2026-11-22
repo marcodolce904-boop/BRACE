@@ -11,7 +11,7 @@ from check_plugin import check_plugin  # noqa: E402
 
 
 def make_plugin(tmp, lang="en", name=None, display="BRACE", version="0.2.0",
-                body="Body.\n", description="Short description."):
+                body="Body.\n", description="Short description.", skill="demo"):
     root = Path(tmp)
     (root / ".claude-plugin").mkdir(parents=True)
     (root / ".claude-plugin" / "plugin.json").write_text(json.dumps({
@@ -20,10 +20,10 @@ def make_plugin(tmp, lang="en", name=None, display="BRACE", version="0.2.0",
         "version": version,
         "description": "Plugin description.",
     }))
-    skill = root / "skills" / "demo"
-    skill.mkdir(parents=True)
-    (skill / "SKILL.md").write_text(
-        "---\nname: demo\ndescription: %s\n---\n\n%s" % (description, body))
+    skill_dir = root / "skills" / skill
+    skill_dir.mkdir(parents=True)
+    (skill_dir / "SKILL.md").write_text(
+        "---\nname: %s\ndescription: %s\n---\n\n%s" % (skill, description, body))
     return root
 
 
@@ -64,6 +64,23 @@ class CheckPluginTests(unittest.TestCase):
             (root / "evals").mkdir()
             (root / "evals" / "p.md").write_text("V.A.N.T.A. vanta\n")
             self.assertEqual(check_plugin(root, "en"), [])
+
+    def test_triggers_missing(self):
+        errs = self.errors(skill="decision",
+                           description="Records a DECISION. Use it when the user says I've decided.")
+        self.assertTrue(any("decision" in e and "ho deciso" in e for e in errs), errs)
+        errs = self.errors("it", skill="decisione",
+                           description="Registra una scelta. Usala quando l'utente dice ho deciso.")
+        self.assertTrue(any("decisione" in e and "DECISIONE" in e for e in errs), errs)
+        self.assertTrue(any("I've decided" in e for e in errs), errs)
+
+    def test_triggers_present(self):
+        self.assertEqual(self.errors(
+            skill="decision",
+            description="Records a decision. Use it when the user says i've decided, Ho deciso, or DECISION."), [])
+        self.assertEqual(self.errors(
+            "it", skill="punto-nave",
+            description="Usala per PUNTO NAVE, STOP, facciamo il punto, where are we."), [])
 
     def test_real_plugins_pass(self):
         self.assertEqual(check_plugin(ROOT / "plugins" / "brace", "en"), [])

@@ -1,6 +1,6 @@
 ---
 name: metodo
-description: Metodo di analisi BRACE per decisioni, piani, strategie e problemi tecnici, con priorità esplicite, controllo delle premesse, obiezione più forte e confidenza dichiarata. Usala quando l'utente nomina BRACE, chiede un'analisi critica o un reality check, vuole valutare una decisione o un piano, oppure chiede di smontare un ragionamento.
+description: "Metodo di analisi critica BRACE: priorità esplicite, controllo delle premesse, obiezione più forte e confidenza dichiarata, per risposte che reggano al confronto con la realtà. Usala quando l'utente ha davanti una decisione strategica, personale, di lavoro o di business, un piano o una scelta su cui è difficile tornare indietro, anche se la richiesta è vaga o emotiva: 'non so se accettare questa offerta', 'è una buona idea?', 'mollo tutto e mi metto in proprio?', 'cosa faresti al posto mio?', 'I'm not sure whether to accept this offer', 'is this a good idea?'. Per le scelte tecniche usala solo quando la posta in gioco è alta (architettura, migrazioni, scelte costose da cambiare) o quando l'utente chiede esplicitamente un'analisi critica, un reality check o di smontare un ragionamento. Non usarla per le domande tecniche o di codice di routine ('libreria X o Y?', 'questo codice va bene?'): a quelle rispondi normalmente. Parole chiave: BRACE, analisi critica, reality check."
 ---
 
 # Metodo BRACE

@@ -1,6 +1,6 @@
 ---
 name: punto-nave
-description: Fotografia dello stato del lavoro (obiettivo, vincoli, variabili, decisioni, questioni aperte, prossima azione) salvata su file e ricaricata nelle sessioni successive. Usala quando l'utente scrive PUNTO NAVE o STOP, chiede di fare il punto della situazione, oppure quando una conversazione lunga ha cambiato direzione più volte.
+description: "Fotografia dello stato del lavoro (obiettivo, vincoli, variabili, decisioni, questioni aperte, prossima azione) salvata su file e ricaricata nelle sessioni successive. Usala quando l'utente vuole fare il punto della situazione o fermare il lavoro, oppure quando una conversazione lunga ha cambiato direzione più volte: 'facciamo il punto', 'riassumi dove siamo', 'riprendiamo domani', 'where are we?', 'sum up where we stand'. Parole chiave: PUNTO NAVE, STOP."
 argument-hint: "[focus opzionale]"
 ---
 

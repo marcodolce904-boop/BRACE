@@ -17,6 +17,27 @@ MIGRATION_PATH = ".vanta/"
 # Directories the checker does not scan (Task 7 removes "evals").
 IGNORED_DIRS = {"evals"}
 
+# lang -> skill directory -> substrings its description must contain
+# (case-insensitive). Skills absent from the plugin are not checked.
+REQUIRED_TRIGGERS = {
+    "en": {
+        "method": ["BRACE", "not sure whether", "non so se", "is this a good idea"],
+        "stress-test": ["STRESS TEST", "how could this go wrong", "come potrebbe andare storto"],
+        "decision": ["DECISION", "I've decided", "ho deciso"],
+        "review": ["REVIEW", "was I right", "avevo ragione"],
+        "position-fix": ["POSITION FIX", "PUNTO NAVE", "STOP", "where are we", "facciamo il punto"],
+        "wargame": ["WARGAME", "how would competitors react", "come reagirebbe"],
+    },
+    "it": {
+        "metodo": ["BRACE", "non so se", "not sure whether", "è una buona idea"],
+        "stress-test": ["STRESS TEST", "how could this go wrong", "come potrebbe andare storto"],
+        "decisione": ["DECISIONE", "ho deciso", "I've decided"],
+        "revisione": ["REVISIONE", "avevo ragione", "was I right"],
+        "punto-nave": ["PUNTO NAVE", "STOP", "facciamo il punto", "where are we"],
+        "wargame": ["WARGAME", "come reagirebbe", "how would competitors react"],
+    },
+}
+
 _OLD_NAME = re.compile(r"V\.A\.N\.T\.A\.|\bvanta\b", re.IGNORECASE)
 
 
@@ -100,11 +121,26 @@ def _rule_description_length(root, lang):
     return errors
 
 
+def _rule_triggers(root, lang):
+    errors = []
+    for skill, phrases in REQUIRED_TRIGGERS[lang].items():
+        path = root / "skills" / skill / "SKILL.md"
+        if not path.is_file():
+            continue
+        description = parse_frontmatter(path).get("description", "").casefold()
+        for phrase in phrases:
+            if phrase.casefold() not in description:
+                errors.append("skills/%s/SKILL.md: description of %s lacks trigger %r"
+                              % (skill, skill, phrase))
+    return errors
+
+
 def check_plugin(root, lang):
     """Return a list of error strings for the plugin at root; empty means pass."""
     root = Path(root)
     errors = []
-    for rule in (_rule_old_name, _rule_plugin_json, _rule_description_length):
+    for rule in (_rule_old_name, _rule_plugin_json, _rule_description_length,
+                 _rule_triggers):
         errors.extend(rule(root, lang))
     return errors
 

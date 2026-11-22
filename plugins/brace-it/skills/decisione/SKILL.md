@@ -1,6 +1,6 @@
 ---
 name: decisione
-description: Registra una decisione nel registro decisioni (.brace/decisioni.md) con alternative scartate, motivazione, previsione verificabile, confidenza e data di revisione. Usala quando l'utente scrive DECISIONE, chiede di registrare o annotare una scelta, oppure ha appena preso una decisione importante e accetta di registrarla.
+description: "Registra una decisione nel registro decisioni (.brace/decisioni.md) con alternative scartate, motivazione, previsione verificabile, confidenza e data di revisione. Usala quando l'utente chiede di registrare o annotare una scelta, oppure ha appena preso una decisione importante e accetta di registrarla: 'ho deciso di...', 'segnati questa scelta', 'andiamo con X', 'mettilo agli atti', 'I've decided to...', 'let's go with X'. Parola chiave: DECISIONE."
 argument-hint: "[decisione]"
 ---
 

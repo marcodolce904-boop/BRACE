@@ -1,6 +1,6 @@
 ---
 name: method
-description: BRACE analysis method for decisions, plans, strategies and technical problems, with explicit priorities, premise checks, the strongest objection and stated confidence. Use it when the user mentions BRACE, asks for a critical analysis or a reality check, wants to evaluate a decision or a plan, or asks to take a line of reasoning apart.
+description: "BRACE critical-analysis method: explicit priorities, premise checks, the strongest objection and stated confidence, so the answer holds up against reality. Use it when the user faces a strategic, personal, work or business decision, a plan, or a choice that is hard to reverse, including vague or emotional requests: 'I'm not sure whether to accept this offer', 'is this a good idea?', 'should I quit and start my own thing?', 'what would you do in my place?', 'non so se accettare questa offerta', 'è una buona idea?'. Use it for technical choices only when the stakes are high (architecture, migrations, choices that are costly to change) or when the user explicitly asks for a critical analysis, a reality check or to take a line of reasoning apart. Do not use it for routine technical or coding questions ('library X or Y?', 'is this code OK?'): answer those normally. Keywords: BRACE, critical analysis, reality check."
 ---
 
 # BRACE Method
