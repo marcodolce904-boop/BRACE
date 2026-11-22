@@ -2,12 +2,18 @@
 name: wargame
 description: "Simulazione Rosso contro Blu su un piano o una decisione: un avversario attacca il piano, un difensore lo adatta, poi una sintesi indica conseguenze di secondo ordine e punto di rottura. Usala quando l'esito dipende da come reagiranno gli altri (concorrenti, mercato, controparte) e la posta in gioco è alta, oppure quando l'utente chiede una simulazione avversaria: 'come reagirebbe il mercato?', 'come reagirebbero i concorrenti?', 'simula la controparte', 'how would competitors react?', 'simulate the other side'. Parola chiave: WARGAME."
 argument-hint: "[scenario] [rapido]"
-disable-model-invocation: true
 ---
 
 # Wargame Rosso / Blu
 
 Scenario: $ARGUMENTS
+
+## Controllo del costo
+
+Fallo prima di ogni altra cosa.
+
+- **Sotto-agenti disponibili.** Se gli argomenti non contengono `rapido`, di' in una riga che la modalità con agenti costa diverse risposte normali, proponi la modalità rapida e aspetta un sì. Esempio: "Il wargame con agenti costa diverse risposte normali; in alternativa posso farne una versione rapida qui. Procedo con gli agenti?" Se l'utente sceglie la rapida o non conferma, usa la modalità rapida.
+- **Sotto-agenti non disponibili.** Passa alla modalità rapida e dillo in una riga. Esempio: "Qui gli agenti non sono disponibili, quindi simulo io entrambe le parti."
 
 ## Preparazione
 
@@ -21,7 +27,7 @@ Se uno di questi elementi manca e cambierebbe il risultato, fai una sola domanda
 
 ## Modalità
 
-- **Con agenti (predefinita).** ROSSO e BLU sono agenti separati, ciascuno con il proprio contesto. Costa diverse volte una risposta normale: avvisa l'utente in una riga prima di partire.
+- **Con agenti (predefinita).** ROSSO e BLU sono agenti separati, ciascuno con il proprio contesto. Costa diverse volte una risposta normale: avviala solo dopo il sì nel controllo del costo.
 - **Rapida.** Se gli argomenti contengono `rapido`, simula entrambe le parti tu, in questa conversazione, con lo stesso formato. Costo basso, ma le due parti condividono lo stesso punto di vista.
 
 ## Procedura con agenti
@@ -45,4 +51,4 @@ Se uno di questi elementi manca e cambierebbe il risultato, fai una sola domanda
 **Confidenza:** Alta/Media/Bassa — cosa la cambierebbe.
 ```
 
-Il wargame produce scenari plausibili, non previsioni: etichetta come ipotesi tutto ciò che non poggia su dati. Chiudi proponendo `/brace-it:decisione` se dalla simulazione esce una scelta da registrare.
+Il wargame produce scenari plausibili, non previsioni: etichetta come ipotesi tutto ciò che non poggia su dati. Se dalla simulazione esce una scelta da registrare, chiudi proponendo di registrare la decisione.

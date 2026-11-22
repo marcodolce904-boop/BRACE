@@ -27,6 +27,13 @@ def make_plugin(tmp, lang="en", name=None, display="BRACE", version="0.2.0",
     return root
 
 
+METHOD_EN = "BRACE: not sure whether, non so se, is this a good idea."
+METHOD_IT = "BRACE: non so se, not sure whether, è una buona idea."
+WARGAME_EN = "WARGAME: how would competitors react, come reagirebbe."
+WARGAME_IT = "WARGAME: come reagirebbe, how would competitors react."
+STRESS = "STRESS TEST: how could this go wrong, come potrebbe andare storto."
+
+
 class CheckPluginTests(unittest.TestCase):
     def errors(self, lang="en", **kw):
         with tempfile.TemporaryDirectory() as tmp:
@@ -81,6 +88,64 @@ class CheckPluginTests(unittest.TestCase):
         self.assertEqual(self.errors(
             "it", skill="punto-nave",
             description="Usala per PUNTO NAVE, STOP, facciamo il punto, where are we."), [])
+
+    # Task 5: routing and cost gates
+
+    def test_method_next_tool_section(self):
+        self.assertEqual(self.errors(skill="method", description=METHOD_EN,
+                                     body="## Next tool\n\nOffer it.\n"), [])
+        errs = self.errors(skill="method", description=METHOD_EN,
+                           body="## Plugin tools\n\n- `/brace:decision`\n")
+        self.assertTrue(any("Next tool" in e for e in errs), errs)
+        self.assertEqual(self.errors("it", skill="metodo", description=METHOD_IT,
+                                     body="## Strumento successivo\n\nProponilo.\n"), [])
+        errs = self.errors("it", skill="metodo", description=METHOD_IT,
+                           body="## Strumenti del plugin\n\nTesto.\n")
+        self.assertTrue(any("Strumento successivo" in e for e in errs), errs)
+
+    def test_wargame_cost_gate_first(self):
+        good = "# W\n\n## Cost check\n\nAsk.\n\n## Preparation\n\nSet.\n"
+        self.assertEqual(self.errors(skill="wargame", description=WARGAME_EN, body=good), [])
+        bad = "# W\n\n## Preparation\n\nSet.\n\n## Cost check\n\nAsk.\n"
+        errs = self.errors(skill="wargame", description=WARGAME_EN, body=bad)
+        self.assertTrue(any("Cost check" in e for e in errs), errs)
+        good_it = "# W\n\n## Controllo del costo\n\nChiedi.\n\n## Preparazione\n\nFissa.\n"
+        self.assertEqual(self.errors("it", skill="wargame", description=WARGAME_IT,
+                                     body=good_it), [])
+        errs = self.errors("it", skill="wargame", description=WARGAME_IT,
+                           body="# W\n\n## Preparazione\n\nFissa.\n")
+        self.assertTrue(any("Controllo del costo" in e for e in errs), errs)
+
+    def test_wargame_model_invocation_enabled(self):
+        good = "# W\n\n## Cost check\n\nAsk.\n"
+        errs = self.errors(skill="wargame", body=good,
+                           description=WARGAME_EN + "\ndisable-model-invocation: true")
+        self.assertTrue(any("disable-model-invocation" in e for e in errs), errs)
+
+    def test_stress_test_independent_waits(self):
+        good = "## Modes\n\n- **Standard.** Cheap.\n- **Independent.** Warn in one line and wait for a yes.\n"
+        self.assertEqual(self.errors(skill="stress-test", description=STRESS, body=good), [])
+        bad = "## Modes\n\n- **Standard.** Cheap.\n- **Independent.** Higher cost: warn the user in one line.\n"
+        errs = self.errors(skill="stress-test", description=STRESS, body=bad)
+        self.assertTrue(any("wait for a yes" in e for e in errs), errs)
+        good_it = "## Modalità\n\n- **Indipendente.** Avvisa in una riga e aspetta un sì.\n"
+        self.assertEqual(self.errors("it", skill="stress-test", description=STRESS,
+                                     body=good_it), [])
+        bad_it = "## Modalità\n\n- **Indipendente.** Avvisa in una riga.\n"
+        errs = self.errors("it", skill="stress-test", description=STRESS, body=bad_it)
+        self.assertTrue(any("aspetta un sì" in e for e in errs), errs)
+
+    def test_output_style_without_commands(self):
+        for lang, cmd in (("en", "/brace:decision"), ("it", "/brace-it:decisione")):
+            with tempfile.TemporaryDirectory() as tmp:
+                root = make_plugin(tmp, lang)
+                (root / "output-styles").mkdir()
+                style = root / "output-styles" / "brace.md"
+                style.write_text("---\nname: BRACE\n---\n\nJust ask for a stress test.\n")
+                self.assertEqual(check_plugin(root, lang), [])
+                style.write_text("---\nname: BRACE\n---\n\nSuggest `%s`.\n" % cmd)
+                errs = check_plugin(root, lang)
+                self.assertTrue(any("output-styles/brace.md" in e for e in errs), errs)
 
     def test_real_plugins_pass(self):
         self.assertEqual(check_plugin(ROOT / "plugins" / "brace", "en"), [])

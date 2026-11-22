@@ -2,12 +2,18 @@
 name: wargame
 description: "Red versus Blue simulation on a plan or a decision: an adversary attacks the plan, a defender adapts it, then a synthesis identifies second-order consequences and the breaking point. Use it when the outcome depends on how others will react (competitors, the market, a counterpart) and the stakes are high, or when the user asks for an adversarial simulation: 'how would competitors react?', 'simulate the other side', 'what would they do if we cut prices?', 'come reagirebbe il mercato?', 'simula la controparte'. Keyword: WARGAME."
 argument-hint: "[scenario] [quick]"
-disable-model-invocation: true
 ---
 
 # Red / Blue Wargame
 
 Scenario: $ARGUMENTS
+
+## Cost check
+
+Do this before anything else.
+
+- **Sub-agents available.** Unless the arguments contain `quick`, say in one line that the agent mode costs several normal answers, offer the quick mode, and wait for a yes. Example: "The agent wargame costs several normal answers; I can run a quick version here instead. Go with agents?" If the user picks quick or does not confirm, use the quick mode.
+- **Sub-agents not available.** Go to the quick mode and say so in one line. Example: "Agents aren't available here, so I'll simulate both sides myself."
 
 ## Preparation
 
@@ -21,7 +27,7 @@ If one of these elements is missing and would change the result, ask a single qu
 
 ## Modes
 
-- **With agents (default).** RED and BLUE are separate agents, each with its own context. It costs several times a normal answer: warn the user in one line before starting.
+- **With agents (default).** RED and BLUE are separate agents, each with its own context. It costs several times a normal answer: start it only after the yes in the cost check.
 - **Quick.** If the arguments contain `quick`, simulate both sides yourself, in this conversation, with the same format. Low cost, but the two sides share the same point of view.
 
 ## Procedure with agents
@@ -45,4 +51,4 @@ If one of these elements is missing and would change the result, ask a single qu
 **Confidence:** High/Medium/Low — what would change it.
 ```
 
-The wargame produces plausible scenarios, not forecasts: label as an assumption anything not grounded in data. Close by suggesting `/brace:decision` if the simulation leads to a choice worth recording.
+The wargame produces plausible scenarios, not forecasts: label as an assumption anything not grounded in data. If the simulation leads to a choice worth recording, close by offering to record the decision.

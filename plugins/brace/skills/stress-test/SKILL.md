@@ -13,7 +13,7 @@ If the object is not clear from the arguments or the conversation, ask in one se
 ## Modes
 
 - **Standard (default).** Run the pre-mortem yourself, in this conversation. Low cost. Limitation: the critique comes from the same context that produced the plan, so it tends to miss the same blind spots.
-- **Independent.** If the arguments contain `independent` (or the user asks for an external critic), delegate to the `nemesis` agent. Pass it only the text of the plan, the success criterion and the constraints stated by the user; do not pass it your reasoning or your opinions on the plan, or it loses its independence. Then report its critique and add, separately, your comment on what you agree with and what you don't. Higher cost: warn the user in one line.
+- **Independent.** If the arguments contain `independent` (or the user asks for an external critic), delegate to the `nemesis` agent. Pass it only the text of the plan, the success criterion and the constraints stated by the user; do not pass it your reasoning or your opinions on the plan, or it loses its independence. Then report its critique and add, separately, your comment on what you agree with and what you don't. Higher cost: warn the user in one line; if the independent mode was not explicitly requested, wait for a yes before starting.
 
 ## Procedure
 

@@ -38,6 +38,14 @@ REQUIRED_TRIGGERS = {
     },
 }
 
+# Pinned headings and phrases for routing and cost gates (Task 5).
+METHOD_SKILL = {"en": "method", "it": "metodo"}
+NEXT_TOOL_HEADING = {"en": "## Next tool", "it": "## Strumento successivo"}
+COST_GATE_HEADING = {"en": "## Cost check", "it": "## Controllo del costo"}
+INDEPENDENT_BULLET = {"en": "- **Independent.**", "it": "- **Indipendente.**"}
+INDEPENDENT_WAIT = {"en": "wait for a yes", "it": "aspetta un sì"}
+_COMMAND = re.compile(r"/brace(-it)?:")
+
 _OLD_NAME = re.compile(r"V\.A\.N\.T\.A\.|\bvanta\b", re.IGNORECASE)
 
 
@@ -135,12 +143,59 @@ def _rule_triggers(root, lang):
     return errors
 
 
+def _body_lines(path):
+    """Return the lines of a file after its frontmatter."""
+    lines = path.read_text(encoding="utf-8").splitlines()
+    block = _split_frontmatter("\n".join(lines))
+    return lines[len(block) + 2:] if block is not None else lines
+
+
+def _rule_routing(root, lang):
+    errors = []
+    method = root / "skills" / METHOD_SKILL[lang] / "SKILL.md"
+    if method.is_file():
+        heading = NEXT_TOOL_HEADING[lang]
+        if heading not in [line.rstrip() for line in _body_lines(method)]:
+            errors.append("skills/%s/SKILL.md: missing section %r"
+                          % (METHOD_SKILL[lang], heading))
+    stress = root / "skills" / "stress-test" / "SKILL.md"
+    if stress.is_file():
+        bullets = [line for line in _body_lines(stress)
+                   if line.startswith(INDEPENDENT_BULLET[lang])]
+        if not any(INDEPENDENT_WAIT[lang] in line for line in bullets):
+            errors.append("skills/stress-test/SKILL.md: %r mode bullet lacks %r"
+                          % (INDEPENDENT_BULLET[lang], INDEPENDENT_WAIT[lang]))
+    styles = root / "output-styles"
+    if styles.is_dir():
+        for path in sorted(styles.glob("*.md")):
+            for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                m = _COMMAND.search(line)
+                if m:
+                    errors.append("%s:%d: output style names a command (%r)"
+                                  % (path.relative_to(root), n, m.group(0)))
+    return errors
+
+
+def _rule_cost_gate(root, lang):
+    path = root / "skills" / "wargame" / "SKILL.md"
+    if not path.is_file():
+        return []
+    errors = []
+    if "disable-model-invocation" in parse_frontmatter(path):
+        errors.append("skills/wargame/SKILL.md: disable-model-invocation must be absent")
+    headings = [line.rstrip() for line in _body_lines(path) if line.startswith("## ")]
+    if not headings or headings[0] != COST_GATE_HEADING[lang]:
+        errors.append("skills/wargame/SKILL.md: first ## heading must be %r, found %r"
+                      % (COST_GATE_HEADING[lang], headings[0] if headings else None))
+    return errors
+
+
 def check_plugin(root, lang):
     """Return a list of error strings for the plugin at root; empty means pass."""
     root = Path(root)
     errors = []
     for rule in (_rule_old_name, _rule_plugin_json, _rule_description_length,
-                 _rule_triggers):
+                 _rule_triggers, _rule_routing, _rule_cost_gate):
         errors.extend(rule(root, lang))
     return errors
 

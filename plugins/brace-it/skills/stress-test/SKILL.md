@@ -13,7 +13,7 @@ Se l'oggetto non è chiaro dagli argomenti né dalla conversazione, chiedi in un
 ## Modalità
 
 - **Standard (predefinita).** Esegui il pre-mortem tu, in questa conversazione. Costo basso. Limite: la critica nasce dallo stesso contesto che ha prodotto il piano, quindi tende a non vedere gli stessi punti ciechi.
-- **Indipendente.** Se gli argomenti contengono `indipendente` (o l'utente chiede un critico esterno), delega all'agente `nemesi`. Passagli soltanto il testo del piano, il criterio di successo e i vincoli dichiarati dall'utente; non passargli il tuo ragionamento né le tue opinioni sul piano, altrimenti perde l'indipendenza. Poi riporta la sua critica e aggiungi, separato, il tuo commento su cosa condividi e cosa no. Costo più alto: avvisa l'utente in una riga.
+- **Indipendente.** Se gli argomenti contengono `indipendente` (o l'utente chiede un critico esterno), delega all'agente `nemesi`. Passagli soltanto il testo del piano, il criterio di successo e i vincoli dichiarati dall'utente; non passargli il tuo ragionamento né le tue opinioni sul piano, altrimenti perde l'indipendenza. Poi riporta la sua critica e aggiungi, separato, il tuo commento su cosa condividi e cosa no. Costo più alto: avvisa l'utente in una riga; se la modalità indipendente non è stata chiesta esplicitamente, aspetta un sì prima di partire.
 
 ## Procedura
 
