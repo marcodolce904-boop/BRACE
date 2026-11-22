@@ -1,38 +1,62 @@
 #!/bin/sh
-# V.A.N.T.A. (English) - SessionStart hook.
-# If the working folder contains a V.A.N.T.A. state (.vanta/), it brings it into
-# the session context: the latest Position Fix and the decisions due for review.
-# If .vanta/ does not exist it prints nothing, so it uses no tokens.
+# BRACE (English) - SessionStart hook.
+# If the working folder contains a BRACE state (.brace/, or the older .vanta/),
+# it brings it into the session context: the latest Position Fix and the
+# decisions due for review.
+# If neither folder exists it prints nothing, so it uses no tokens.
 
-dir="${CLAUDE_PROJECT_DIR:-$PWD}/.vanta"
-[ -d "$dir" ] || exit 0
+base="${CLAUDE_PROJECT_DIR:-$PWD}"
+if [ -d "$base/.brace" ]; then
+  dir="$base/.brace"
+elif [ -d "$base/.vanta" ]; then
+  dir="$base/.vanta"
+else
+  exit 0
+fi
 
-pf="$dir/position-fix.md"
-log="$dir/decisions.md"
+# Resolve a state file: the plain name first, then the brace- prefixed name.
+resolve() {
+  if [ -f "$dir/$1" ]; then
+    echo "$dir/$1"
+  elif [ -f "$dir/brace-$1" ]; then
+    echo "$dir/brace-$1"
+  fi
+}
 
-if [ -f "$pf" ]; then
-  echo "[V.A.N.T.A.] Latest Position Fix saved in this folder (.vanta/position-fix.md). Use it as context if the user resumes this work, checking with them that it is still valid:"
+pf=$(resolve position-fix.md)
+log=$(resolve decisions.md)
+
+if [ -n "$pf" ]; then
+  echo "[BRACE] Latest Position Fix saved in this folder ($(basename "$dir")/$(basename "$pf")). Use it as context if the user resumes this work, checking with them that it is still valid:"
   echo
   head -c 4000 "$pf"
   echo
 fi
 
-if [ -f "$log" ]; then
-  today=$(date +%Y-%m-%d)
+if [ -n "$log" ]; then
+  # BRACE_TODAY overrides the date; it exists for tests only.
+  today="${BRACE_TODAY:-$(date +%Y-%m-%d)}"
   due=$(awk -v today="$today" '
+    # Value of a field: the text after the first colon, spaces trimmed.
+    function value(line) {
+      sub(/^[^:]*:/, "", line)
+      gsub(/^[ \t]+|[ \t]+$/, "", line)
+      return line
+    }
     function flush() {
       if (id != "" && status == "open" && rev != "" && rev <= today) {
         n++; ids = ids (ids == "" ? "" : ", ") id
       }
       id = ""; status = ""; rev = ""
     }
+    { sub(/\r$/, "") }
     /^## / { flush(); id = $2; next }
-    /^- Review:/ { rev = $3; next }
-    /^- Status:/ { status = $3; next }
+    /^- Review:/ { rev = value($0); next }
+    /^- Status:/ { status = value($0); next }
     END { flush(); if (n > 0) print n " (" ids ")" }
   ' "$log")
   if [ -n "$due" ]; then
-    echo "[V.A.N.T.A.] Decisions with overdue review: $due. Remind the user once, at the start, suggesting /vanta-en:review."
+    echo "[BRACE] Decisions with overdue review: $due. Remind the user once, at the start, and offer to review them; they can simply say \"let's review my decisions\"."
   fi
 fi
 

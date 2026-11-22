@@ -18,6 +18,8 @@ jobs:
       - name: Check EN/IT parity
         run: python3 scripts/check_parity.py
       - name: Shellcheck
-        run: shellcheck plugins/*/scripts/*.sh
+        run: shellcheck plugins/*/scripts/*.sh tests/*.sh
+      - name: Hook tests
+        run: sh tests/test_hooks.sh
       - name: JSON syntax
         run: find . -name '*.json' -not -path './.git/*' -print0 | xargs -0 -n1 python3 -m json.tool > /dev/null
