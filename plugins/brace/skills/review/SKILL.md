@@ -13,12 +13,12 @@ Arguments: $ARGUMENTS
 Check what you can do here, not which product you are in.
 
 - **Can you delegate to a sub-agent?** Not needed: this skill always runs in this conversation.
-- **Can you read and write a persistent project folder?** That means a file tool on the user's project folder, where files stay after this conversation ends, as in Claude Code or Cowork; a sandbox that is wiped at the end of the chat does not count. If yes, follow the procedure on `.brace/decisions.md`. Read from `.brace/`, or from `.vanta/` if `.brace/` does not exist; a file named `brace-decisions.md` counts as `decisions.md`. Before the first write, if `.vanta/` exists and `.brace/` does not, rename `.vanta/` to `.brace/` and tell the user in one line: "I renamed `.vanta/` to `.brace/`." If there is no persistent folder, follow "Memory in chat" and say so in one line: "There is no project folder here, so I'll work on the log from the Project knowledge."
+- **Can you read and write a persistent project folder?** That means a file tool on the user's project folder, where files stay after this conversation ends, as in Claude Code or Cowork; a sandbox that is wiped at the end of the chat does not count. If yes, follow the procedure on `.brace/decisions.md`. Read from `.brace/`, or from `.vanta/` if `.brace/` does not exist; a file named `brace-decisions.md` counts as `decisions.md`. Before the first write, if `.vanta/` exists and `.brace/` does not, rename `.vanta/` to `.brace/` and tell the user in one line: "I renamed `.vanta/` to `.brace/`." If there is no persistent folder, follow "Memory in chat", which gives the one-line notice.
 - **Was state injected at session start?** If decisions due for review were listed, start from those, still reading the log for the details. If nothing was injected and there is no persistent folder, look for the log as described in "Memory in chat".
 
 ## Procedure
 
-1. Read `.brace/decisions.md` in the current working folder. If it does not exist, say so and suggest `/brace:decision`.
+1. Read `.brace/decisions.md` in the current working folder. If there is no log, or the decision is not in it, say in one line that there is no record yet; ask the user what they expected at the time and what actually happened; judge the decision process (the information, options and reasoning available then) separately from the result; then offer in one line to record it, so the next review has a written prediction to compare with.
 2. Select the decisions to review:
    - with an ID in the arguments, only that one;
    - with `all`, all those with `Status: open`;
@@ -48,7 +48,7 @@ Comment only on what the numbers allow you to say. With fewer than five decision
 
 Use this section when there is no persistent project folder. The file format is the same as in `.brace/`, so the user can later move the file into a `.brace/` folder and Claude Code or Cowork will pick it up.
 
-- **Reading.** In step 1, look in the Project knowledge and in any uploaded file for `brace-decisions.md` (or `decisions.md`) and use it as the log. If you do not find it, say so, ask the user to upload it if they keep it elsewhere, and otherwise suggest recording a decision first.
-- **Writing.** After updating the entries, show the full updated file `brace-decisions.md` in a single code block. Then give one line: "Replace `brace-decisions.md` in the Project knowledge with this file." Always give the whole log, never a fragment, so the user replaces one file instead of merging.
-- **Not in a Project.** If there is no Project knowledge to read from or add to, say once in this chat that the memory lasts only for this chat, and suggest creating a Project and adding the file to its knowledge. Still show the full file so the user can keep it.
+- **Reading.** In step 1, look in the Project knowledge and in any uploaded file for `brace-decisions.md` (or `decisions.md`) and use it as the log. If you do not find it, ask the user to upload it if they keep it elsewhere, and otherwise follow the no-log path in step 1.
+- **Writing.** After updating the entries, show the full updated file `brace-decisions.md` in a single code block. Then give exactly one notice line. If you found the log in the Project knowledge: "Replace `brace-decisions.md` in the Project knowledge with this file." Otherwise use the line in "No Project knowledge found" below. Always give the whole log, never a fragment, so the user replaces one file instead of merging.
+- **No Project knowledge found.** If you find no BRACE files and no Project knowledge, do not assert that this chat is outside a Project: an empty Project looks the same. Give this line instead of the Project-knowledge line above, once in this chat: "This memory lasts only for this chat unless you add this file to a Project's knowledge as `brace-decisions.md` (create a Project if you have none)." Still show the full file so the user can keep it.
 - **Calibration.** Count from the file, entry by entry, not from memory or from the conversation. If a code tool is available, run the count with code on the text of the updated file and build the table from its output.

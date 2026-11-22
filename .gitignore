@@ -3,6 +3,7 @@
 
 # Stato personale creato dal plugin durante i test · Personal state created during tests
 .vanta/
+.brace/
 
 .DS_Store
 __pycache__/

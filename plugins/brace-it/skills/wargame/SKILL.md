@@ -10,16 +10,16 @@ Scenario: $ARGUMENTS
 
 ## Controllo del costo
 
-Fallo prima di ogni altra cosa.
+Fallo prima di ogni altra cosa, con un'eccezione: se la Preparazione richiede una domanda di chiarimento, fai prima quella domanda e chiedi del costo quando lo scenario è chiaro.
 
 - **Sotto-agenti disponibili.** Se gli argomenti non contengono `rapido`, di' in una riga che la modalità con agenti costa diverse risposte normali, proponi la modalità rapida e aspetta un sì. Esempio: "Il wargame con agenti costa diverse risposte normali; in alternativa posso farne una versione rapida qui. Procedo con gli agenti?" Se l'utente sceglie la rapida o non conferma, usa la modalità rapida.
-- **Sotto-agenti non disponibili.** Passa alla modalità rapida e dillo in una riga. Esempio: "Qui gli agenti non sono disponibili, quindi simulo io entrambe le parti."
+- **Sotto-agenti non disponibili.** Passa alla modalità rapida e dillo in una riga, aggiungendo che in Cowork o Claude Code ogni parte sarebbe un agente separato. Esempio: "Qui gli agenti non sono disponibili, quindi simulo io entrambe le parti; in Cowork o Claude Code ogni parte sarebbe un agente separato."
 
 ## Dove stai lavorando
 
 Verifica cosa puoi fare qui, non in quale prodotto ti trovi.
 
-- **Puoi delegare a un sotto-agente?** Se sì, la modalità con agenti usa gli agenti `rosso` e `blu`, dopo il sì nel controllo del costo. Se no, il controllo del costo qui sopra ti manda già alla modalità rapida con il suo avviso in una riga; puoi aggiungere che in Cowork o Claude Code ogni parte sarebbe un agente separato.
+- **Puoi delegare a un sotto-agente?** Se sì, la modalità con agenti usa gli agenti `rosso` e `blu`, dopo il sì nel controllo del costo. Se no, il controllo del costo qui sopra ti manda già alla modalità rapida con il suo avviso in una riga, che deve dire che in Cowork o Claude Code ogni parte sarebbe un agente separato.
 - **Puoi leggere e scrivere una cartella di progetto persistente?** Significa uno strumento per i file sulla cartella del progetto dell'utente, dove i file restano dopo la fine di questa conversazione, come in Claude Code o Cowork; una sandbox che si azzera alla fine della chat non conta. Questa skill non scrive stato. Se esiste un Punto Nave in `.brace/` (o nella vecchia `.vanta/`), usalo come contesto per il piano BLU.
 - **È stato caricato uno stato all'avvio della sessione?** Se è stato caricato un Punto Nave, usalo come contesto e verifica con l'utente che sia ancora valido. Se no, e non c'è una cartella persistente, cerca `brace-punto-nave.md` nella conoscenza del Project e nei file caricati.
 

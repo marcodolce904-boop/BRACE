@@ -1,6 +1,6 @@
 ---
 name: stress-test
-description: "Pre-mortem of a plan, a thesis or a decision: assumes it has already failed and reconstructs the causes, with early warning signals and countermeasures. Use it when the user wants to know how a plan could fail or asks to find its weak spots: 'how could this go wrong?', 'poke holes in this', 'what am I missing?', 'what could kill this?', 'come potrebbe andare storto?', 'trova i punti deboli'. Keywords: STRESS TEST, pre-mortem."
+description: "Pre-mortem of a plan, a thesis or a decision: assumes it has already failed and reconstructs the causes, with early warning signals and countermeasures. Use it when the user wants to know how a plan could fail or asks to find its weak spots: 'how could this go wrong?', 'poke holes in this', 'what am I missing?', 'what could kill this?', 'come potrebbe andare storto?', 'trova i punti deboli'. Not for code review or debugging. Keywords: STRESS TEST, pre-mortem."
 argument-hint: "[plan, thesis or file] [independent]"
 ---
 

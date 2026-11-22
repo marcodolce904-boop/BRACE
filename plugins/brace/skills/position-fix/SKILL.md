@@ -1,6 +1,6 @@
 ---
 name: position-fix
-description: "Snapshot of the work status (goal, constraints, variables, decisions, open questions, next action), saved to a file and reloaded in later sessions. Use it when the user wants to take stock of the situation or pause the work, or when a long conversation has changed direction several times: 'where are we?', 'sum up where we stand', 'let's pick this up tomorrow', 'facciamo il punto', 'riassumi dove siamo'. Keywords: POSITION FIX, PUNTO NAVE, STOP."
+description: "Snapshot of the work status (goal, constraints, variables, decisions, open questions, next action), saved to a file and reloaded in later sessions. Use it when the user writes POSITION FIX or STOP (or PUNTO NAVE), when they want to take stock of the situation or pause the work, or when a long conversation has changed direction several times: 'where are we?', 'sum up where we stand', 'let's pick this up tomorrow', 'facciamo il punto', 'riassumi dove siamo'. Keywords: POSITION FIX, PUNTO NAVE, STOP."
 argument-hint: "[optional focus]"
 ---
 
@@ -13,7 +13,7 @@ Produce a snapshot of the status of the work in this conversation. If the user h
 Check what you can do here, not which product you are in.
 
 - **Can you delegate to a sub-agent?** Not needed: this skill always runs in this conversation.
-- **Can you read and write a persistent project folder?** That means a file tool on the user's project folder, where files stay after this conversation ends, as in Claude Code or Cowork; a sandbox that is wiped at the end of the chat does not count. If yes, save as in "Saving". Read from `.brace/`, or from `.vanta/` if `.brace/` does not exist; a file named `brace-position-fix.md` counts as `position-fix.md`. Before the first write, if `.vanta/` exists and `.brace/` does not, rename `.vanta/` to `.brace/` and tell the user in one line: "I renamed `.vanta/` to `.brace/`." If there is no persistent folder, follow "Memory in chat" and say so in one line: "There is no project folder here, so the memory goes in the Project knowledge."
+- **Can you read and write a persistent project folder?** That means a file tool on the user's project folder, where files stay after this conversation ends, as in Claude Code or Cowork; a sandbox that is wiped at the end of the chat does not count. If yes, save as in "Saving". Read from `.brace/`, or from `.vanta/` if `.brace/` does not exist; a file named `brace-position-fix.md` counts as `position-fix.md`. Before the first write, if `.vanta/` exists and `.brace/` does not, rename `.vanta/` to `.brace/` and tell the user in one line: "I renamed `.vanta/` to `.brace/`." If there is no persistent folder, follow "Memory in chat", which gives the one-line notice.
 - **Was state injected at session start?** If a Position Fix was loaded, follow "Resuming". If not, and there is no persistent folder, look for it as described in "Memory in chat".
 
 ## Format
@@ -53,6 +53,6 @@ If a previous Position Fix was loaded at the start of the session and the user r
 
 Use this section when there is no persistent project folder. The file format is the same as in `.brace/`, so the user can later move the file into a `.brace/` folder and Claude Code or Cowork will pick it up.
 
-- **Writing.** Show the Position Fix, then the full updated file `brace-position-fix.md` in a single code block. Then give one line: "Add this file to the Project knowledge as `brace-position-fix.md`, replacing the previous one if there is one." Always give the whole file, never a fragment, so the user replaces one file instead of merging.
+- **Writing.** Show the Position Fix, then the full updated file `brace-position-fix.md` in a single code block. Then give exactly one notice line. If you found Project knowledge or a BRACE file: "Add this file to the Project knowledge as `brace-position-fix.md`, replacing the previous one if there is one." Otherwise use the line in "No Project knowledge found" below. Always give the whole file, never a fragment, so the user replaces one file instead of merging.
 - **Reading.** At the start of relevant work, look in the Project knowledge and in any uploaded file for `brace-position-fix.md` (or `position-fix.md`). If you find it, use it as in "Resuming": check with the user that it is still valid before building on it.
-- **Not in a Project.** If there is no Project knowledge to read from or add to, say once in this chat that the memory lasts only for this chat, and suggest creating a Project and adding the file to its knowledge. Still show the full file so the user can keep it.
+- **No Project knowledge found.** If you find no BRACE files and no Project knowledge, do not assert that this chat is outside a Project: an empty Project looks the same. Give this line instead of the Project-knowledge line above, once in this chat: "This memory lasts only for this chat unless you add this file to a Project's knowledge as `brace-position-fix.md` (create a Project if you have none)." Still show the full file so the user can keep it.
