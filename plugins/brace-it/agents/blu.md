@@ -1,6 +1,6 @@
 ---
 name: blu
-description: Parte difensiva nel wargame BRACE Adatta il piano dell'utente alle mosse dell'avversario ROSSO. Usalo solo all'interno della skill wargame.
+description: Parte difensiva nel wargame BRACE. Adatta il piano dell'utente alle mosse dell'avversario ROSSO. Usalo solo all'interno della skill wargame.
 tools:
 - Read
 model: sonnet

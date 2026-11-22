@@ -1,6 +1,6 @@
 ---
 name: rosso
-description: Parte avversaria nel wargame BRACE Simula concorrenti, clienti, mercato, controparti o la realtà che reagisce al piano BLU. Usalo solo all'interno della skill wargame.
+description: Parte avversaria nel wargame BRACE. Simula concorrenti, clienti, mercato, controparti o la realtà che reagisce al piano BLU. Usalo solo all'interno della skill wargame.
 tools:
 - Read
 - WebSearch
