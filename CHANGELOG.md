@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2 · 2026-11-22
+
+- Method now also starts when the user is overwhelmed and under pressure and asks what to do, without any keyword (found in real use: it did not trigger in chat) · Il metodo ora parte anche quando l'utente è sotto pressione e chiede cosa fare, senza parole chiave (emerso nell'uso reale: in chat non si attivava).
+- New eval `route-under-pressure` in both languages: 3/3 with the plugin vs 0/3 without, in both languages · Nuova eval `route-under-pressure` in entrambe le lingue: 3/3 con il plugin contro 0/3 senza, in entrambe le lingue.
+
 ## 0.2.1 · 2026-11-22
 
 Fixes from the first measured eval run · Correzioni dalla prima misurazione delle eval.
