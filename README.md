@@ -1,98 +1,123 @@
-# V.A.N.T.A.
+# BRACE
 
-[Italiano](README.md) · **English**
+**Bias · Risks · Assumptions · Confidence · Evidence**
 
-A plugin for Claude Code and the Claude desktop app that turns Claude into an analytical decision advisor: it checks premises, looks for the strongest objection, states its confidence, stress-tests plans and keeps track of what you decided so you can later compare it with what actually happened.
+[Italiano](README.it.md) · **English**
 
-This repository contains two versions of the same plugin, with equivalent content:
+BRACE is a plugin for Claude that turns it into an analytical decision advisor: it checks premises, looks for the strongest objection, states its confidence, stress-tests plans and keeps track of what you decided so you can later compare it with what actually happened. It works in chat (claude.ai, desktop app), in Cowork and in Claude Code.
 
-| Version | Folder | Plugin name | Commands |
+This repository is a plugin marketplace with two versions of the same plugin, with equivalent content:
+
+| Version | Folder | Plugin id | Skills |
 |---|---|---|---|
-| English | [`plugins/vanta-en`](plugins/vanta-en) | `vanta-en` | `/vanta-en:method`, `/vanta-en:position-fix`, … |
-| Italiano | [`plugins/vanta`](plugins/vanta) | `vanta` | `/vanta:metodo`, `/vanta:punto-nave`, … |
+| English | [`plugins/brace`](plugins/brace) | `brace` | `method`, `position-fix`, `stress-test`, `wargame`, `decision`, `review` |
+| Italiano | [`plugins/brace-it`](plugins/brace-it) | `brace-it` | `metodo`, `punto-nave`, `stress-test`, `wargame`, `decisione`, `revisione` |
 
-Install **only one**: both have a startup hook and use the same `.vanta/` folder, so installed together they would do the work twice.
+Install **only one**: both have a startup hook and use the same `.brace/` folder, so installed together they would do the work twice.
 
-> Status: version 0.1.0, experimental. The method follows Anthropic's current prompting recommendations and the research on personas, brevity and self-correction, but it has not yet been measured in the field. The [Checking that it works](#checking-that-it-works) section explains how to do that.
+> Status: version 0.2.0, experimental. The method follows Anthropic's current prompting recommendations and the research on personas, brevity and self-correction, but it has not yet been measured in the field. The [Checking that it works](#checking-that-it-works) section explains how to do that.
 
-## What it contains
+## Install in chat
 
-| Component | Command | Purpose |
-|---|---|---|
-| `method` skill | `/vanta-en:method` | Critical analysis with explicit priorities (accuracy > usefulness > form), reasoning checklist, High/Medium/Low confidence |
-| `position-fix` skill | `/vanta-en:position-fix` | Snapshot of the work status, saved to `.vanta/position-fix.md` |
-| `stress-test` skill | `/vanta-en:stress-test [plan] [independent]` | Pre-mortem: five causes of failure with early signals and countermeasures |
-| `wargame` skill | `/vanta-en:wargame [scenario] [quick]` | Red versus Blue simulation with separate agents and a final synthesis |
-| `decision` skill | `/vanta-en:decision [choice]` | Decision log with a verifiable prediction and a review date |
-| `review` skill | `/vanta-en:review [ID \| all]` | Compares predictions with outcomes, with calibration by confidence level |
-| `nemesis` agent (Opus) | — | Independent critic with a clean context |
-| `red` and `blue` agents (Sonnet) | — | Adversary and defender in the wargame |
-| `V.A.N.T.A.` output style | `/config` → Output style | The method's dry tone and priorities in every answer, opt-in |
-| Startup hook | automatic | Reloads the latest Position Fix and reminds you of decisions due for review |
+For claude.ai and the Claude desktop app:
 
-In chat you can also trigger the skills by starting your message with a keyword: `V.A.N.T.A.`, `POSITION FIX` (or `STOP`), `STRESS TEST`, `WARGAME`, `DECISION`, `REVIEW`.
+1. Open **Customize → Plugins**.
+2. Add the marketplace from GitHub: `marcodolce904-boop/V.A.N.T.A.`
+3. Install `brace` (English) or `brace-it` (Italian).
 
-## Why a plugin instead of a pasted prompt
+The steps can change: the current ones are in the official article [Manage plugins, skills and connectors from one Plugins page](https://support.claude.com/en/articles/17740565-manage-plugins-skills-and-connectors-from-one-plugins-page).
 
-- **Real memory.** The Position Fix and the decision log are files in the project folder. At the start of every session the plugin reloads them by itself: nothing to copy back in, nothing lost when you close the chat.
-- **Truly independent critique.** Self-critique within the same conversation is weak, because the model rereads its own reasoning with the same blind spots. `nemesis` works in a separate context and sees only the plan, not how you got there.
-- **A real adversary in the wargame.** Red and Blue are separate agents, with opposite instructions and goals. The two sides don't share a point of view, as they do when a single model plays both.
-- **Measurable calibration.** The decision log compares what you predicted with what happened and computes how often you are right at each confidence level. It is the only way to know whether your confidence is reliable, and no prompt alone can do it.
-- **Costs under control.** Skills enter the context only when needed (only their description is loaded up front). The wargame starts only on explicit request, and stress test and wargame have a cheap mode. The hook prints nothing in folders without `.vanta/`.
-- **The right model for each role.** Opus where reasoning quality matters most (the critique), Sonnet for the simulations.
-- **Evidence-based method.** No decorative personas, absolute bans or invented confidence percentages: the [Design choices](#design-choices) section explains what was kept and what wasn't.
-- **Versionable and shareable.** It installs with two commands, updates from GitHub, and the decision log can live under version control alongside the project.
+In chat, sub-agents and hooks do not run, so the independent critic and the wargame run inside the conversation (and say so), and memory lives in a Claude Project: see [Memory in chat](#memory-in-chat).
 
-## Installation
-
-### From GitHub
-
-In Claude Code:
+## Install in Claude Code
 
 ```
 /plugin marketplace add marcodolce904-boop/V.A.N.T.A.
-/plugin install vanta-en@vanta
+/plugin install brace@brace
 ```
 
-For the Italian version, use `/plugin install vanta@vanta` as the second command.
+For the Italian version, use `/plugin install brace-it@brace` as the second command. Remember: install only one.
 
-### Locally, to try it out
+To try it locally, or to check the structure before publishing:
 
 ```bash
-claude --plugin-dir ./plugins/vanta-en
+claude --plugin-dir ./plugins/brace
+claude plugin validate ./plugins/brace
 ```
 
-To check the structure before publishing:
+## Just talk to it
 
-```bash
-claude plugin validate ./plugins/vanta-en
-claude plugin details ./plugins/vanta-en
+You do not need commands. Describe what you need; the right skill starts, or is offered when it costs more. For example:
+
+- "I'm not sure whether to accept this offer." (starts `method`)
+- "How could this go wrong? Poke holes in this plan." (starts `stress-test`)
+- "Let's go with the second option, note this down." (starts `decision`)
+- "Where are we? Sum up where we stand." (starts `position-fix`)
+- "How would competitors react if we cut our price?" (offers `wargame`, after a cost check)
+
+Italian works in both plugins, whichever one you installed. Keywords still work as extra triggers: `BRACE`, `POSITION FIX` (or `PUNTO NAVE`, or `STOP`), `STRESS TEST`, `WARGAME`, `DECISION`, `REVIEW`. Slash commands are available too (`/brace:method`, `/brace:position-fix`, `/brace:stress-test`, `/brace:wargame`, `/brace:decision`, `/brace:review`).
+
+Routine technical questions ("library X or Y?", "is this code OK?") get a normal answer: the method is for decisions, plans and choices that are hard to undo.
+
+## What it contains
+
+| Component | Purpose |
+|---|---|
+| `method` skill | Critical analysis with explicit priorities (accuracy > usefulness > form), reasoning checklist, High/Medium/Low confidence. It is the entry point and proposes the next tool when one adds value |
+| `position-fix` skill | Snapshot of the work status, saved to `.brace/position-fix.md` |
+| `stress-test` skill | Pre-mortem: five causes of failure with early signals and countermeasures; an independent mode with a separate critic |
+| `wargame` skill | Red versus Blue simulation with a final synthesis; asks for a yes before the costly agent mode |
+| `decision` skill | Decision log with a verifiable prediction and a review date |
+| `review` skill | Compares predictions with outcomes, with calibration by confidence level |
+| `nemesis` agent (Opus) | Independent critic with a clean context |
+| `red` and `blue` agents (Sonnet) | Adversary and defender in the wargame |
+| `BRACE` output style | The method's dry tone and priorities in every answer, opt-in: `/config` → Output style |
+| Startup hook | Reloads the latest Position Fix and reminds you of decisions due for review |
+
+## Three levels, one plugin
+
+Each skill detects what the environment can do and uses the richest path available. When it falls back, it tells you in one line.
+
+| | Chat (web, app) | Cowork | Claude Code |
+|---|---|---|---|
+| Method, stress test, decision, review | yes | yes | yes |
+| Independent critic | in-conversation, stated | agent | agent |
+| Wargame | quick, stated | agents | agents |
+| Memory | Project knowledge | `.brace/` | `.brace/` |
+| Automatic resume and due-review reminder | no | yes | yes |
+| Output style, slash commands | slash only | slash only | both |
+
+## Memory in chat
+
+Chat has no project folder, so BRACE keeps its memory in a Claude Project:
+
+1. Create a Project (or open an existing one) and work inside it.
+2. When `position-fix`, `decision` or `review` produce something to keep, BRACE shows the result and then the **full updated file** in a single code block, with a one-line instruction.
+3. Add that content to the Project knowledge, or replace the existing file, as `brace-position-fix.md` (Italian: `brace-punto-nave.md`) and `brace-decisions.md` (Italian: `brace-decisioni.md`). The file is always given in full, so you replace one file instead of merging fragments.
+4. In later chats of the same Project, BRACE looks for those files, uses them, and confirms with you that the Position Fix is still valid. `review` reads the decision log from there and computes calibration by counting from the file.
+
+Outside a Project, BRACE says once that memory lasts only for that chat and still shows the content, so you can keep it. The files use the same format as `.brace/`: you can move them into a folder later and Claude Code picks them up. Claude's own memory feature is not used, because its format cannot be controlled and calibration would become unreliable.
+
+### Files created in the project (Claude Code, Cowork)
+
 ```
-
-### Desktop app
-
-The plugin contains no executables in `bin/`, so it can be installed in the desktop app. Skills work wherever the plugin is installed; agents, hooks and the output style depend on what the environment supports.
-
-## Usage
-
-1. **Turn on the style (optional).** `/config` → Output style → `V.A.N.T.A.`, or in `settings.json` `"outputStyle": "vanta-en:V.A.N.T.A."`. From then on every answer follows the method's priorities. If you'd rather use it only when needed, use `/vanta-en:method`.
-2. **Work as usual.** When a conversation gets long or changes direction, type `/vanta-en:position-fix`.
-3. **Before an important choice**, `/vanta-en:stress-test` (pre-mortem) and, if the stakes are high, `/vanta-en:wargame`.
-4. **When you decide**, `/vanta-en:decision`, with a measurable prediction and a date.
-5. **When it's due**, the plugin reminds you at startup: `/vanta-en:review`.
-
-You don't need everything every time: for a small choice, method and decision are enough. Stress test and wargame make sense for choices that are hard to undo.
-
-### Files created in the project
-
-```
-.vanta/
+.brace/
 ├── position-fix.md          current status
 ├── position-fix-history.md  previous versions
 └── decisions.md             decision log
 ```
 
-If the log contains personal or confidential information, add `.vanta/` to the project's `.gitignore`.
+If the log contains personal or confidential information, add `.brace/` to the project's `.gitignore`.
+
+## Upgrading from V.A.N.T.A.
+
+BRACE 0.2.0 is the new name of V.A.N.T.A. 0.1.0. The renames are breaking:
+
+- Plugin ids: `vanta-en` is now `brace`, `vanta` is now `brace-it`; the marketplace is `brace`. Uninstall the old plugin and install the new one (`/plugin install brace@brace`), only one of the two.
+- Commands: `/vanta-en:method` is now `/brace:method`, and likewise for the other skills; Italian `/vanta:metodo` is now `/brace-it:metodo`. Skill and agent names are unchanged.
+- Output style: `V.A.N.T.A.` is now `BRACE` (`"outputStyle": "brace:BRACE"`).
+- State folder: `.vanta/` is now `.brace/`. You do not need to move anything: BRACE reads `.vanta/` if `.brace/` does not exist, and the first time it writes state it renames `.vanta/` to `.brace/` and tells you in one line. If you added `.vanta/` to `.gitignore`, add `.brace/` too.
+- The repository keeps its GitHub address for now, so the install lines above still use `marcodolce904-boop/V.A.N.T.A.`.
 
 ## Indicative costs
 
@@ -104,42 +129,50 @@ If the log contains personal or confidential information, add `.vanta/` to the p
 | Quick wargame | about 1-2x |
 | Wargame with agents | about 3-6x |
 
-These are estimates to be checked in use: `/cost` in Claude Code shows the session's real usage.
+These are estimates to be checked in use: `/cost` in Claude Code shows the session's real usage. The independent stress test and the agent wargame always wait for your yes.
 
 ## Design choices
 
-The plugin comes from a revision of a longer system prompt (V.A.N.T.A. v3.0). What changed and why:
+The plugin comes from a revision of a longer system prompt. What changed and why:
 
 - **No decorative identity.** Personas in the prompt do not improve model accuracy (Zheng et al., 2024; Wharton Generative AI Labs, 2025). The operating rules remain.
 - **Modules turned into checklists.** Names such as Sophia, Nemesis and Kairos became concrete check questions.
 - **Brevity subordinate to accuracy.** Conciseness instructions increase wrong answers when the question contains a false premise (Giskard, Phare benchmark, 2025).
 - **Confidence in levels, not percentages.** Percentages verbalised by models are systematically overconfident (Xiong et al., ICLR 2024).
 - **Critique separate from the author.** Without an external signal, self-correction is unreliable (Huang et al., ICLR 2024): hence the clean-context `nemesis` agent.
-- **Multi-agent only on request.** Multi-agent systems use far more tokens than a chat (Anthropic, *How we built our multi-agent research system*, 2025) and agent debate does not reliably beat simpler methods: so it is reserved for the wargame, where a genuine adversarial point of view is needed.
+- **Multi-agent only on request.** Multi-agent systems use far more tokens than a chat (Anthropic, *How we built our multi-agent research system*, 2025) and agent debate does not reliably beat simpler methods: so it is reserved for the wargame, where a genuine adversarial point of view is needed, and it waits for your yes.
 - **Pre-mortem.** Gary Klein's technique rests on research into "prospective hindsight" (Mitchell, Russo and Pennington, 1989). The evidence concerns the number of causes identified more than their quality.
 
 ## Checking that it works
 
-Each version contains six test cases in `evals/` (false premise, forced objection, user under pressure, unknown data, insistence without arguments, Position Fix). Run them with:
+Each version contains 14 test cases in `evals/`: six on the method (false premise, forced objection, user under pressure, unknown data, insistence without arguments, Position Fix) and eight `route-*` cases that check natural-language routing (the right skill starts or is offered, a vague request enters `method`, a routine coding question does not). Run them with:
 
 ```bash
-claude plugin eval ./plugins/vanta-en
+claude plugin eval ./plugins/brace
 ```
 
 The command compares answers with and without the plugin and scores them with a judge model. Each case runs several times, so it uses credits: for a first pass use `--runs 1`, or pick a single case with `--case false-premise`.
+
+The repository also has structural checks that need no credits and run in CI (`.github/workflows/ci.yml`):
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 scripts/check_plugin.py plugins/brace en
+python3 scripts/check_plugin.py plugins/brace-it it
+python3 scripts/check_parity.py
+sh tests/test_hooks.sh
+```
 
 ## Repository layout
 
 ```
 .claude-plugin/marketplace.json   lists both versions
 plugins/
-├── vanta/      Italian version
-└── vanta-en/   English version
+├── brace/      English version
+└── brace-it/   Italian version
+scripts/        checkers (check_plugin.py, check_parity.py)
+tests/          unit and hook tests
 ```
-
-## Name
-
-"Vanta" is also the name of a well-known software company. For personal use this is not a problem; for wide distribution consider renaming the plugin (`name` field in `plugin.json` and `marketplace.json`).
 
 ## License
 
