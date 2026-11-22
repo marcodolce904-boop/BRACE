@@ -9,7 +9,7 @@ import re
 import sys
 from pathlib import Path
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 DISPLAY_NAME = "BRACE"
 PLUGIN_NAMES = {"en": "brace", "it": "brace-it"}
 MAX_DESCRIPTION = 1024

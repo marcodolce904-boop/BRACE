@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.1 · 2026-11-22
+
+Fixes from the first measured eval run · Correzioni dalla prima misurazione delle eval.
+
+- Position Fix: the next action is exactly one action; extra ones go to open questions · Punto Nave: la prossima azione è una sola; le altre vanno tra le questioni aperte.
+- Method: for vague requests, one question and then stop, no lists or advice before the answer · Metodo: davanti a richieste vaghe, una domanda e poi stop, niente elenchi o consigli prima della risposta.
+- Method: under insistence without new arguments, say so, restate the conclusion and what would change it · Metodo: se l'utente insiste senza argomenti nuovi, dirlo, ribadire la conclusione e cosa la cambierebbe.
+- Method: under pressure, open directly with at most three steps, no label, one question at most · Metodo: con l'utente sotto pressione, aprire subito con al massimo tre passi, senza etichette, al massimo una domanda.
+- Evals: two graders made observable (route-punto-nave, route-review) · Eval: due criteri resi osservabili (route-punto-nave, route-review).
+- Results (3 runs per case, with plugin vs without): Italian 38/42 vs 18/42, English 34/42 vs 16/42, measured before the last two fixes · Risultati (3 giri per caso, con plugin contro senza): italiano 38/42 contro 18/42, inglese 34/42 contro 16/42, misurati prima delle ultime due correzioni.
+
 ## 0.2.0 · 2026-11-22
 
 ### English

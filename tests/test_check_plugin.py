@@ -7,10 +7,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from check_plugin import check_plugin  # noqa: E402
+from check_plugin import VERSION, check_plugin  # noqa: E402
 
 
-def make_plugin(tmp, lang="en", name=None, display="BRACE", version="0.2.0",
+def make_plugin(tmp, lang="en", name=None, display="BRACE", version=VERSION,
                 body="Body.\n", description="Short description.", skill="demo"):
     root = Path(tmp)
     (root / ".claude-plugin").mkdir(parents=True)

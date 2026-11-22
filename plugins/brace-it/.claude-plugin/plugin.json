@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "brace-it",
   "displayName": "BRACE",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Consulente analitico per decisioni: metodo critico basato su evidenze, Punto Nave persistente, stress test (pre-mortem), wargame Rosso/Blu, registro decisioni con revisione e calibrazione.",
   "author": {
     "name": "Marco Dolce"
