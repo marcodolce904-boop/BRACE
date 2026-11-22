@@ -30,7 +30,7 @@ Usa esattamente queste voci, in quest'ordine. Ogni voce è breve e autosufficien
 - **Questioni aperte:** cosa resta da decidere o verificare.
 - **Rischi principali:** al massimo tre, con il segnale che li renderebbe evidenti.
 - **Stato:** a che punto è il lavoro.
-- **Prossima azione:** una sola azione concreta, con chi la fa.
+- **Prossima azione:** una sola azione concreta, con chi la fa: un solo verbo, niente catene con "e" o "poi". Se ne servono diverse, scegli la prima e sposta le altre in "Questioni aperte".
 ```
 
 Scrivi "nessuna" per le voci vuote invece di inventare contenuto. Distingui ciò che l'utente ha deciso da ciò che hai proposto tu: una tua proposta non accettata va in "Questioni aperte", non in "Decisioni prese".

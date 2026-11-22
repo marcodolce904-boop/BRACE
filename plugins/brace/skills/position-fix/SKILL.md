@@ -30,7 +30,7 @@ Use exactly these items, in this order. Each item is short and self-contained: i
 - **Open questions:** what is still to be decided or verified.
 - **Main risks:** at most three, with the signal that would make each visible.
 - **Status:** where the work stands.
-- **Next action:** one concrete action, with who does it.
+- **Next action:** exactly one concrete action, with who does it: one verb, no "and" or "then" chains. If several are needed, pick the first and move the others to Open questions.
 ```
 
 Write "none" for empty items instead of inventing content. Distinguish what the user decided from what you proposed: a proposal of yours that was not accepted goes under "Open questions", not "Decisions made".
