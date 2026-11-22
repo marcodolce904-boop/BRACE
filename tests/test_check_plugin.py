@@ -38,6 +38,16 @@ ENV_EN = "\n## Where you are running\n\nCheck capabilities.\n"
 ENV_IT = "\n## Dove stai lavorando\n\nControlla le capacità.\n"
 
 
+def add_eval(root, name, prompt, grader=True):
+    """Create evals/<name>/ with an optional prompt.md and graders/criteria.md."""
+    case = Path(root) / "evals" / name
+    (case / "graders").mkdir(parents=True, exist_ok=True)
+    if prompt is not None:
+        (case / "prompt.md").write_text(prompt)
+    if grader:
+        (case / "graders" / "criteria.md").write_text("---\ntype: llm\nweight: 1\n---\n\nOk.\n")
+
+
 class CheckPluginTests(unittest.TestCase):
     def errors(self, lang="en", **kw):
         with tempfile.TemporaryDirectory() as tmp:
@@ -69,11 +79,62 @@ class CheckPluginTests(unittest.TestCase):
         self.assertEqual(self.errors(description='"%s"' % ("x" * 1024)), [])
         self.assertTrue(self.errors(description='"%s"' % ("x" * 1025)))
 
-    def test_evals_ignored(self):
+    def test_evals_old_name_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = make_plugin(tmp)
-            (root / "evals").mkdir()
-            (root / "evals" / "p.md").write_text("V.A.N.T.A. vanta\n")
+            add_eval(root, "case", "Use the V.A.N.T.A. method.\n")
+            errs = check_plugin(root, "en")
+            self.assertTrue(any("evals/case/prompt.md" in e and "old name" in e for e in errs), errs)
+
+    def test_evals_missing_grader(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = make_plugin(tmp)
+            add_eval(root, "case", "Plain.\n", grader=False)
+            errs = check_plugin(root, "en")
+            self.assertTrue(any("evals/case" in e and "criteria.md" in e for e in errs), errs)
+
+    def test_evals_missing_prompt(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = make_plugin(tmp)
+            add_eval(root, "case", None)
+            errs = check_plugin(root, "en")
+            self.assertTrue(any("evals/case" in e and "prompt.md" in e for e in errs), errs)
+
+    def test_evals_route_keyword_rejected(self):
+        for text in ("Please do a STRESS TEST of my plan.", "Run a WARGAME.",
+                     "DECISIONE presa.", "Use BRACE here.", "Say STOP now."):
+            with tempfile.TemporaryDirectory() as tmp:
+                root = make_plugin(tmp)
+                add_eval(root, "route-x", "---\nmax_turns: 4\n---\n\n%s\n" % text)
+                errs = check_plugin(root, "en")
+                self.assertTrue(any("route-x" in e and "keyword" in e for e in errs), (text, errs))
+
+    def test_evals_route_slash_command_rejected(self):
+        for text in ("Try /brace:decision please.", "Run /stress-test now.", "/review this"):
+            with tempfile.TemporaryDirectory() as tmp:
+                root = make_plugin(tmp)
+                add_eval(root, "route-x", "%s\n" % text)
+                errs = check_plugin(root, "en")
+                self.assertTrue(any("route-x" in e and "slash" in e for e in errs), (text, errs))
+
+    def test_evals_route_natural_prompt_passes(self):
+        text = ("Should I take the job and/or stay? See https://example.com/a/b. "
+                "I made a decision and want a review of the plan, 50/50 odds, 3/4 sure.\n")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = make_plugin(tmp)
+            add_eval(root, "route-x", text)
+            self.assertEqual(check_plugin(root, "en"), [])
+
+    def test_evals_route_punto_nave_exempt(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = make_plugin(tmp)
+            add_eval(root, "route-punto-nave", "Summary. PUNTO NAVE\n")
+            self.assertEqual(check_plugin(root, "en"), [])
+
+    def test_evals_non_route_may_use_keywords(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = make_plugin(tmp)
+            add_eval(root, "position-fix", "Summary. POSITION FIX\n")
             self.assertEqual(check_plugin(root, "en"), [])
 
     def test_triggers_missing(self):

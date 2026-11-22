@@ -14,8 +14,8 @@ DISPLAY_NAME = "BRACE"
 PLUGIN_NAMES = {"en": "brace", "it": "brace-it"}
 MAX_DESCRIPTION = 1024
 MIGRATION_PATH = ".vanta/"
-# Directories the checker does not scan (Task 7 removes "evals").
-IGNORED_DIRS = {"evals"}
+# Directories the checker does not scan.
+IGNORED_DIRS = set()
 
 # lang -> skill directory -> substrings its description must contain
 # (case-insensitive). Skills absent from the plugin are not checked.
@@ -247,12 +247,51 @@ def _rule_environment(root, lang):
     return errors
 
 
+# Eval cases (Task 7). Routing prompts must be natural language: no skill
+# keyword (ALL-CAPS, case-sensitive: lowercase "decision" is ordinary prose)
+# and no slash command (a token starting with "/" plus a letter, so "and/or",
+# "3/4" and URLs are not flagged). `route-punto-nave` tests the keyword itself.
+ROUTE_KEYWORD_EXEMPT = {"route-punto-nave"}
+_ROUTE_KEYWORDS = sorted({"BRACE"} | {p for skills in REQUIRED_TRIGGERS.values()
+                                      for phrases in skills.values()
+                                      for p in phrases if p.isupper()})
+_KEYWORD = re.compile(r"\b(%s)\b" % "|".join(re.escape(k) for k in _ROUTE_KEYWORDS))
+_SLASH_COMMAND = re.compile(r"(?:^|[\s(\"'`])/[A-Za-z]")
+
+
+def _rule_evals(root, lang):
+    evals = root / "evals"
+    if not evals.is_dir():
+        return []
+    errors = []
+    for case in sorted(p for p in evals.iterdir() if p.is_dir()):
+        prompt = case / "prompt.md"
+        for required in (prompt, case / "graders" / "criteria.md"):
+            if not required.is_file():
+                errors.append("evals/%s: missing %s"
+                              % (case.name, required.relative_to(case)))
+        if (not case.name.startswith("route-") or case.name in ROUTE_KEYWORD_EXEMPT
+                or not prompt.is_file()):
+            continue
+        for n, line in enumerate(_body_lines(prompt), 1):
+            m = _KEYWORD.search(line)
+            if m:
+                errors.append("evals/%s/prompt.md: routing prompt contains keyword %r (line %d)"
+                              % (case.name, m.group(0), n))
+            m = _SLASH_COMMAND.search(line)
+            if m:
+                errors.append("evals/%s/prompt.md: routing prompt contains slash command %r (line %d)"
+                              % (case.name, m.group(0).strip(), n))
+    return errors
+
+
 def check_plugin(root, lang):
     """Return a list of error strings for the plugin at root; empty means pass."""
     root = Path(root)
     errors = []
     for rule in (_rule_old_name, _rule_plugin_json, _rule_description_length,
-                 _rule_triggers, _rule_routing, _rule_cost_gate, _rule_environment):
+                 _rule_triggers, _rule_routing, _rule_cost_gate, _rule_environment,
+                 _rule_evals):
         errors.extend(rule(root, lang))
     return errors
 
