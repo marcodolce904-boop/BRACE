@@ -22,7 +22,7 @@ Install **only one**: both have a startup hook and use the same `.brace/` folder
 For claude.ai and the Claude desktop app:
 
 1. Open **Customize → Plugins**.
-2. Add the marketplace from GitHub: `marcodolce904-boop/V.A.N.T.A.`
+2. Add the marketplace from GitHub: `marcodolce904-boop/BRACE`
 3. Install `brace` (English) or `brace-it` (Italian).
 
 The steps can change: the current ones are in the official article [Manage plugins, skills and connectors from one Plugins page](https://support.claude.com/en/articles/17740565-manage-plugins-skills-and-connectors-from-one-plugins-page).
@@ -32,7 +32,7 @@ In chat, sub-agents and hooks do not run, so the independent critic and the warg
 ## Install in Claude Code
 
 ```
-/plugin marketplace add marcodolce904-boop/V.A.N.T.A.
+/plugin marketplace add marcodolce904-boop/BRACE
 /plugin install brace@brace
 ```
 
@@ -117,7 +117,7 @@ BRACE 0.2.0 is the new name of V.A.N.T.A. 0.1.0. The renames are breaking:
 - Commands: `/vanta-en:method` is now `/brace:method`, and likewise for the other skills; Italian `/vanta:metodo` is now `/brace-it:metodo`. Skill and agent names are unchanged.
 - Output style: `V.A.N.T.A.` is now `BRACE` (`"outputStyle": "brace:BRACE"`).
 - State folder: `.vanta/` is now `.brace/`. You do not need to move anything: BRACE reads `.vanta/` if `.brace/` does not exist, and the first time it writes state it renames `.vanta/` to `.brace/` and tells you in one line. If you added `.vanta/` to `.gitignore`, add `.brace/` too.
-- The repository keeps its GitHub address for now, so the install lines above still use `marcodolce904-boop/V.A.N.T.A.`.
+- The repository moved from `marcodolce904-boop/V.A.N.T.A.` to `marcodolce904-boop/BRACE`. GitHub redirects the old address, but re-add the marketplace with the new one: `/plugin marketplace remove vanta`, then the install lines above.
 
 ## Indicative costs
 

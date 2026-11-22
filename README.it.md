@@ -22,7 +22,7 @@ Installane **una sola**: entrambe hanno un hook di avvio e usano la stessa carte
 Per claude.ai e l'app desktop di Claude:
 
 1. Apri **Customize → Plugins**.
-2. Aggiungi il marketplace da GitHub: `marcodolce904-boop/V.A.N.T.A.`
+2. Aggiungi il marketplace da GitHub: `marcodolce904-boop/BRACE`
 3. Installa `brace-it` (italiano) o `brace` (inglese).
 
 I passaggi possono cambiare: quelli aggiornati sono nell'articolo ufficiale [Manage plugins, skills and connectors from one Plugins page](https://support.claude.com/en/articles/17740565-manage-plugins-skills-and-connectors-from-one-plugins-page).
@@ -32,7 +32,7 @@ In chat sub-agenti e hook non girano, quindi il critico indipendente e il wargam
 ## Installazione in Claude Code
 
 ```
-/plugin marketplace add marcodolce904-boop/V.A.N.T.A.
+/plugin marketplace add marcodolce904-boop/BRACE
 /plugin install brace-it@brace
 ```
 
@@ -117,7 +117,7 @@ BRACE 0.2.0 è il nuovo nome di V.A.N.T.A. 0.1.0. I cambi di nome non sono retro
 - Comandi: `/vanta:metodo` diventa `/brace-it:metodo`, e così le altre skill; l'inglese `/vanta-en:method` diventa `/brace:method`. I nomi di skill e agenti non cambiano.
 - Stile di output: `V.A.N.T.A.` diventa `BRACE` (`"outputStyle": "brace-it:BRACE"`).
 - Cartella di stato: `.vanta/` diventa `.brace/`. Non devi spostare nulla: BRACE legge `.vanta/` se `.brace/` non esiste e, alla prima scrittura dello stato, rinomina `.vanta/` in `.brace/` e te lo dice in una riga. Se avevi messo `.vanta/` nel `.gitignore`, aggiungi anche `.brace/`.
-- Per ora il repository mantiene il suo indirizzo GitHub, quindi le righe di installazione qui sopra usano ancora `marcodolce904-boop/V.A.N.T.A.`.
+- Il repository è passato da `marcodolce904-boop/V.A.N.T.A.` a `marcodolce904-boop/BRACE`. GitHub reindirizza il vecchio indirizzo, ma conviene aggiungere di nuovo il marketplace con quello nuovo: `/plugin marketplace remove vanta`, poi le righe di installazione qui sopra.
 
 ## Costi indicativi
 
