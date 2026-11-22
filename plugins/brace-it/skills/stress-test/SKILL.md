@@ -10,6 +10,14 @@ Oggetto da testare: $ARGUMENTS
 
 Se l'oggetto non è chiaro dagli argomenti né dalla conversazione, chiedi in una frase quale piano o tesi testare e fermati.
 
+## Dove stai lavorando
+
+Verifica cosa puoi fare qui, non in quale prodotto ti trovi.
+
+- **Puoi delegare a un sotto-agente?** Se sì, la modalità indipendente delega all'agente `nemesi` come descritto sotto. Se no e la modalità indipendente è richiesta o accettata, esegui tu la sua procedura, in questa conversazione, giudicando soltanto il testo del piano, il criterio di successo e i vincoli dichiarati, e di' in una riga: "Qui la critica è meno indipendente: in Cowork o Claude Code la farebbe un agente separato." La modalità standard non ha bisogno di sotto-agenti.
+- **Puoi leggere e scrivere una cartella di progetto persistente?** Significa uno strumento per i file sulla cartella del progetto dell'utente, dove i file restano dopo la fine di questa conversazione, come in Claude Code o Cowork; una sandbox che si azzera alla fine della chat non conta. Questa skill non scrive stato. Se esiste un Punto Nave in `.brace/` (o nella vecchia `.vanta/`), usalo come contesto per il piano.
+- **È stato caricato uno stato all'avvio della sessione?** Se è stato caricato un Punto Nave, usalo come contesto e verifica con l'utente che sia ancora valido. Se no, e non c'è una cartella persistente, cerca `brace-punto-nave.md` nella conoscenza del Project e nei file caricati.
+
 ## Modalità
 
 - **Standard (predefinita).** Esegui il pre-mortem tu, in questa conversazione. Costo basso. Limite: la critica nasce dallo stesso contesto che ha prodotto il piano, quindi tende a non vedere gli stessi punti ciechi.

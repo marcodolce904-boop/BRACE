@@ -32,6 +32,10 @@ METHOD_IT = "BRACE: non so se, not sure whether, è una buona idea."
 WARGAME_EN = "WARGAME: how would competitors react, come reagirebbe."
 WARGAME_IT = "WARGAME: come reagirebbe, how would competitors react."
 STRESS = "STRESS TEST: how could this go wrong, come potrebbe andare storto."
+DECISION_EN = "Records a decision. Use it when the user says i've decided, Ho deciso, or DECISION."
+PF_IT = "Usala per PUNTO NAVE, STOP, facciamo il punto, where are we."
+ENV_EN = "\n## Where you are running\n\nCheck capabilities.\n"
+ENV_IT = "\n## Dove stai lavorando\n\nControlla le capacità.\n"
 
 
 class CheckPluginTests(unittest.TestCase):
@@ -82,12 +86,10 @@ class CheckPluginTests(unittest.TestCase):
         self.assertTrue(any("I've decided" in e for e in errs), errs)
 
     def test_triggers_present(self):
-        self.assertEqual(self.errors(
-            skill="decision",
-            description="Records a decision. Use it when the user says i've decided, Ho deciso, or DECISION."), [])
-        self.assertEqual(self.errors(
-            "it", skill="punto-nave",
-            description="Usala per PUNTO NAVE, STOP, facciamo il punto, where are we."), [])
+        mem_en = ENV_EN + "\n## Memory in chat\n\nUse `brace-decisions.md`.\n"
+        mem_it = ENV_IT + "\n## Memoria in chat\n\nUsa `brace-punto-nave.md`.\n"
+        self.assertEqual(self.errors(skill="decision", description=DECISION_EN, body=mem_en), [])
+        self.assertEqual(self.errors("it", skill="punto-nave", description=PF_IT, body=mem_it), [])
 
     # Task 5: routing and cost gates
 
@@ -104,12 +106,13 @@ class CheckPluginTests(unittest.TestCase):
         self.assertTrue(any("Strumento successivo" in e for e in errs), errs)
 
     def test_wargame_cost_gate_first(self):
-        good = "# W\n\n## Cost check\n\nAsk.\n\n## Preparation\n\nSet.\n"
+        good = "# W\n\n## Cost check\n\nAsk.\n" + ENV_EN + "\n## Preparation\n\nSet.\n"
         self.assertEqual(self.errors(skill="wargame", description=WARGAME_EN, body=good), [])
         bad = "# W\n\n## Preparation\n\nSet.\n\n## Cost check\n\nAsk.\n"
         errs = self.errors(skill="wargame", description=WARGAME_EN, body=bad)
         self.assertTrue(any("Cost check" in e for e in errs), errs)
-        good_it = "# W\n\n## Controllo del costo\n\nChiedi.\n\n## Preparazione\n\nFissa.\n"
+        good_it = ("# W\n\n## Controllo del costo\n\nChiedi.\n" + ENV_IT
+                   + "\n## Preparazione\n\nFissa.\n")
         self.assertEqual(self.errors("it", skill="wargame", description=WARGAME_IT,
                                      body=good_it), [])
         errs = self.errors("it", skill="wargame", description=WARGAME_IT,
@@ -123,12 +126,12 @@ class CheckPluginTests(unittest.TestCase):
         self.assertTrue(any("disable-model-invocation" in e for e in errs), errs)
 
     def test_stress_test_independent_waits(self):
-        good = "## Modes\n\n- **Standard.** Cheap.\n- **Independent.** Warn in one line and wait for a yes.\n"
+        good = ENV_EN + "## Modes\n\n- **Standard.** Cheap.\n- **Independent.** Warn in one line and wait for a yes.\n"
         self.assertEqual(self.errors(skill="stress-test", description=STRESS, body=good), [])
         bad = "## Modes\n\n- **Standard.** Cheap.\n- **Independent.** Higher cost: warn the user in one line.\n"
         errs = self.errors(skill="stress-test", description=STRESS, body=bad)
         self.assertTrue(any("wait for a yes" in e for e in errs), errs)
-        good_it = "## Modalità\n\n- **Indipendente.** Avvisa in una riga e aspetta un sì.\n"
+        good_it = ENV_IT + "## Modalità\n\n- **Indipendente.** Avvisa in una riga e aspetta un sì.\n"
         self.assertEqual(self.errors("it", skill="stress-test", description=STRESS,
                                      body=good_it), [])
         bad_it = "## Modalità\n\n- **Indipendente.** Avvisa in una riga.\n"
@@ -146,6 +149,58 @@ class CheckPluginTests(unittest.TestCase):
                 style.write_text("---\nname: BRACE\n---\n\nSuggest `%s`.\n" % cmd)
                 errs = check_plugin(root, lang)
                 self.assertTrue(any("output-styles/brace.md" in e for e in errs), errs)
+
+    # Task 6: levels and memory in chat
+
+    def test_environment_section_required(self):
+        for lang, skill, desc in (("en", "stress-test", STRESS), ("en", "wargame", WARGAME_EN),
+                                  ("it", "stress-test", STRESS), ("it", "wargame", WARGAME_IT)):
+            cost = "## Cost check\n\nAsk.\n" if lang == "en" else "## Controllo del costo\n\nChiedi.\n"
+            indep = ("- **Independent.** wait for a yes\n" if lang == "en"
+                     else "- **Indipendente.** aspetta un sì\n")
+            body = cost + indep
+            errs = self.errors(lang, skill=skill, description=desc, body=body)
+            heading = "Where you are running" if lang == "en" else "Dove stai lavorando"
+            self.assertTrue(any(heading in e for e in errs), (lang, skill, errs))
+            env = ENV_EN if lang == "en" else ENV_IT
+            self.assertEqual(self.errors(lang, skill=skill, description=desc, body=body + env), [])
+
+    def test_environment_heading_in_code_block_ignored(self):
+        body = "```markdown\n## Where you are running\n```\n"
+        errs = self.errors(skill="stress-test", description=STRESS,
+                           body=body + "- **Independent.** wait for a yes\n")
+        self.assertTrue(any("Where you are running" in e for e in errs), errs)
+
+    def test_memory_section_required(self):
+        cases = (
+            ("en", "position-fix", "POSITION FIX, PUNTO NAVE, STOP, where are we, facciamo il punto",
+             ENV_EN, "## Memory in chat", "brace-position-fix.md"),
+            ("en", "decision", DECISION_EN, ENV_EN, "## Memory in chat", "brace-decisions.md"),
+            ("en", "review", "REVIEW, was I right, avevo ragione",
+             ENV_EN, "## Memory in chat", "brace-decisions.md"),
+            ("it", "punto-nave", PF_IT, ENV_IT, "## Memoria in chat", "brace-punto-nave.md"),
+            ("it", "decisione", "DECISIONE, ho deciso, I've decided",
+             ENV_IT, "## Memoria in chat", "brace-decisioni.md"),
+            ("it", "revisione", "REVISIONE, avevo ragione, was I right",
+             ENV_IT, "## Memoria in chat", "brace-decisioni.md"),
+        )
+        for lang, skill, desc, env, heading, name in cases:
+            # Missing section.
+            errs = self.errors(lang, skill=skill, description=desc, body=env)
+            self.assertTrue(any(heading[3:] in e for e in errs), (skill, errs))
+            # Section present but without the file name; the name elsewhere does not count.
+            body = env + "\n%s\n\nPaste it.\n\n## Other\n\n`%s`\n" % (heading, name)
+            errs = self.errors(lang, skill=skill, description=desc, body=body)
+            self.assertTrue(any(name in e for e in errs), (skill, errs))
+            # Section with the file name passes.
+            body = env + "\n%s\n\nAdd it as `%s`.\n" % (heading, name)
+            self.assertEqual(self.errors(lang, skill=skill, description=desc, body=body), [])
+
+    def test_memory_names_are_per_language(self):
+        body = ENV_IT + "\n## Memoria in chat\n\nUsa `brace-decisions.md`.\n"
+        errs = self.errors("it", skill="decisione",
+                           description="DECISIONE, ho deciso, I've decided", body=body)
+        self.assertTrue(any("brace-decisioni.md" in e for e in errs), errs)
 
     def test_real_plugins_pass(self):
         self.assertEqual(check_plugin(ROOT / "plugins" / "brace", "en"), [])

@@ -10,6 +10,14 @@ Decision: $ARGUMENTS
 
 The log exists to compare, later on, what the user expected with what actually happened. It only works if the prediction is verifiable, so the quality of the "Prediction" item is the most important part.
 
+## Where you are running
+
+Check what you can do here, not which product you are in.
+
+- **Can you delegate to a sub-agent?** Not needed: this skill always runs in this conversation.
+- **Can you read and write a persistent project folder?** That means a file tool on the user's project folder, where files stay after this conversation ends, as in Claude Code or Cowork; a sandbox that is wiped at the end of the chat does not count. If yes, save as in "Saving". Read from `.brace/`, or from `.vanta/` if `.brace/` does not exist; a file named `brace-decisions.md` counts as `decisions.md`. Before the first write, if `.vanta/` exists and `.brace/` does not, rename `.vanta/` to `.brace/` and tell the user in one line: "I renamed `.vanta/` to `.brace/`." If there is no persistent folder, follow "Memory in chat" and say so in one line: "There is no project folder here, so the log goes in the Project knowledge."
+- **Was state injected at session start?** If decisions due for review were listed, you may remind the user of them after recording. If nothing was injected and there is no persistent folder, look for the log as described in "Memory in chat".
+
 ## Procedure
 
 1. Extract the fields from the conversation. For the missing ones ask a single question that collects them all; do not invent rationales or alternatives the user has not expressed.
@@ -37,6 +45,14 @@ Append the entry at the end of `.brace/decisions.md` in the current working fold
 - Lesson:
 ```
 
-Without file system access, show the entry in chat and suggest where to keep it.
+Without a persistent project folder, follow "Memory in chat" below.
 
 Close with one confirmation line stating the identifier and the review date.
+
+## Memory in chat
+
+Use this section when there is no persistent project folder. The file format is the same as in `.brace/`, so the user can later move the file into a `.brace/` folder and Claude Code or Cowork will pick it up.
+
+- **Reading.** Before assigning the identifier, look in the Project knowledge and in any uploaded file for `brace-decisions.md` (or `decisions.md`). Use it as the existing log, so the new entry goes at its end and the day's sequence number is right.
+- **Writing.** Show the new entry, then the full updated file `brace-decisions.md` in a single code block: the existing log with the new entry appended, or, if there is none, a new log with the title `# Decision log`. Then give one line: "Add this file to the Project knowledge as `brace-decisions.md`, replacing the previous one if there is one." Always give the whole log, never a fragment, so the user replaces one file instead of merging.
+- **Not in a Project.** If there is no Project knowledge to read from or add to, say once in this chat that the memory lasts only for this chat, and suggest creating a Project and adding the file to its knowledge. Still show the full file so the user can keep it.

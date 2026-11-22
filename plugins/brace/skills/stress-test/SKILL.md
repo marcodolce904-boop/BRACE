@@ -10,6 +10,14 @@ Object to test: $ARGUMENTS
 
 If the object is not clear from the arguments or the conversation, ask in one sentence which plan or thesis to test and stop.
 
+## Where you are running
+
+Check what you can do here, not which product you are in.
+
+- **Can you delegate to a sub-agent?** If yes, the independent mode delegates to the `nemesis` agent as described below. If not and the independent mode is requested or agreed, run its procedure yourself, in this conversation, judging only the plan text, the success criterion and the stated constraints, and say in one line: "Here the critique is less independent: in Cowork or Claude Code a separate agent would run it." The standard mode needs no sub-agent.
+- **Can you read and write a persistent project folder?** That means a file tool on the user's project folder, where files stay after this conversation ends, as in Claude Code or Cowork; a sandbox that is wiped at the end of the chat does not count. This skill writes no state. If a Position Fix exists in `.brace/` (or the older `.vanta/`), use it as context for the plan.
+- **Was state injected at session start?** If a Position Fix was loaded, use it as context and check with the user that it is still valid. If not, and there is no persistent folder, look in the Project knowledge and in uploaded files for `brace-position-fix.md`.
+
 ## Modes
 
 - **Standard (default).** Run the pre-mortem yourself, in this conversation. Low cost. Limitation: the critique comes from the same context that produced the plan, so it tends to miss the same blind spots.

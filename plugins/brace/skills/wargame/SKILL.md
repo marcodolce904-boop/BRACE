@@ -15,6 +15,14 @@ Do this before anything else.
 - **Sub-agents available.** Unless the arguments contain `quick`, say in one line that the agent mode costs several normal answers, offer the quick mode, and wait for a yes. Example: "The agent wargame costs several normal answers; I can run a quick version here instead. Go with agents?" If the user picks quick or does not confirm, use the quick mode.
 - **Sub-agents not available.** Go to the quick mode and say so in one line. Example: "Agents aren't available here, so I'll simulate both sides myself."
 
+## Where you are running
+
+Check what you can do here, not which product you are in.
+
+- **Can you delegate to a sub-agent?** If yes, the agent mode uses the `red` and `blue` agents, after the yes in the cost check. If not, the cost check above already sends you to the quick mode with its one-line notice; you may add that in Cowork or Claude Code each side would be a separate agent.
+- **Can you read and write a persistent project folder?** That means a file tool on the user's project folder, where files stay after this conversation ends, as in Claude Code or Cowork; a sandbox that is wiped at the end of the chat does not count. This skill writes no state. If a Position Fix exists in `.brace/` (or the older `.vanta/`), use it as context for the BLUE plan.
+- **Was state injected at session start?** If a Position Fix was loaded, use it as context and check with the user that it is still valid. If not, and there is no persistent folder, look in the Project knowledge and in uploaded files for `brace-position-fix.md`.
+
 ## Preparation
 
 Before launching the agents, set down in a few lines:

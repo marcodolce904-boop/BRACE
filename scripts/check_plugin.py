@@ -46,6 +46,23 @@ INDEPENDENT_BULLET = {"en": "- **Independent.**", "it": "- **Indipendente.**"}
 INDEPENDENT_WAIT = {"en": "wait for a yes", "it": "aspetta un sì"}
 _COMMAND = re.compile(r"/brace(-it)?:")
 
+# Levels and memory in chat (Task 6).
+ENV_HEADING = {"en": "## Where you are running", "it": "## Dove stai lavorando"}
+MEMORY_HEADING = {"en": "## Memory in chat", "it": "## Memoria in chat"}
+ENV_SKILLS = {
+    "en": ["stress-test", "wargame", "position-fix", "decision", "review"],
+    "it": ["stress-test", "wargame", "punto-nave", "decisione", "revisione"],
+}
+# lang -> skill -> chat/Project file names its memory section must name.
+MEMORY_FILES = {
+    "en": {"position-fix": ["brace-position-fix.md"],
+           "decision": ["brace-decisions.md"],
+           "review": ["brace-decisions.md"]},
+    "it": {"punto-nave": ["brace-punto-nave.md"],
+           "decisione": ["brace-decisioni.md"],
+           "revisione": ["brace-decisioni.md"]},
+}
+
 _OLD_NAME = re.compile(r"V\.A\.N\.T\.A\.|\bvanta\b", re.IGNORECASE)
 
 
@@ -190,12 +207,52 @@ def _rule_cost_gate(root, lang):
     return errors
 
 
+def _sections(path):
+    """Map each `## ` heading of a file's body to its text, ignoring fenced code."""
+    sections, current, fenced = {}, None, False
+    for line in _body_lines(path):
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+        elif not fenced and line.startswith("#"):
+            current = line.rstrip() if line.startswith("## ") else None
+            if current is not None:
+                sections.setdefault(current, [])
+            continue
+        if current is not None:
+            sections[current].append(line)
+    return {heading: "\n".join(lines) for heading, lines in sections.items()}
+
+
+def _rule_environment(root, lang):
+    errors = []
+    for skill in ENV_SKILLS[lang]:
+        path = root / "skills" / skill / "SKILL.md"
+        if not path.is_file():
+            continue
+        sections = _sections(path)
+        if ENV_HEADING[lang] not in sections:
+            errors.append("skills/%s/SKILL.md: missing section %r" % (skill, ENV_HEADING[lang]))
+        names = MEMORY_FILES[lang].get(skill)
+        if names is None:
+            continue
+        memory = sections.get(MEMORY_HEADING[lang])
+        if memory is None:
+            errors.append("skills/%s/SKILL.md: missing section %r"
+                          % (skill, MEMORY_HEADING[lang]))
+            continue
+        for name in names:
+            if name not in memory:
+                errors.append("skills/%s/SKILL.md: section %r lacks file name %r"
+                              % (skill, MEMORY_HEADING[lang], name))
+    return errors
+
+
 def check_plugin(root, lang):
     """Return a list of error strings for the plugin at root; empty means pass."""
     root = Path(root)
     errors = []
     for rule in (_rule_old_name, _rule_plugin_json, _rule_description_length,
-                 _rule_triggers, _rule_routing, _rule_cost_gate):
+                 _rule_triggers, _rule_routing, _rule_cost_gate, _rule_environment):
         errors.extend(rule(root, lang))
     return errors
 
