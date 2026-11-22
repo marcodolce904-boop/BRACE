@@ -1,21 +1,21 @@
 {
-  "name": "vanta",
+  "name": "brace",
   "owner": {
     "name": "Marco Dolce"
   },
   "metadata": {
-    "description": "Marketplace del plugin V.A.N.T.A. · V.A.N.T.A. plugin marketplace (Italiano / English)"
+    "description": "Marketplace del plugin BRACE · BRACE plugin marketplace (Italiano / English)"
   },
   "plugins": [
     {
-      "name": "vanta",
-      "source": "./plugins/vanta",
-      "description": "Versione italiana. Consulente analitico per decisioni: Punto Nave, stress test, wargame Rosso/Blu, registro decisioni con revisione."
+      "name": "brace",
+      "source": "./plugins/brace",
+      "description": "English version. BRACE, analytical decision advisor: Position Fix, stress test, Red/Blue wargame, decision log with review."
     },
     {
-      "name": "vanta-en",
-      "source": "./plugins/vanta-en",
-      "description": "English version. Analytical decision advisor: Position Fix, stress test, Red/Blue wargame, decision log with review."
+      "name": "brace-it",
+      "source": "./plugins/brace-it",
+      "description": "Versione italiana. BRACE, consulente analitico per decisioni: Punto Nave, stress test, wargame Rosso/Blu, registro decisioni con revisione."
     }
   ]
 }

@@ -1,146 +1,146 @@
 # V.A.N.T.A.
 
-**Italiano** · [English](README.en.md)
+[Italiano](README.md) · **English**
 
-Plugin per Claude Code e per l'app desktop di Claude che trasforma Claude in un consulente analitico per decisioni: controlla le premesse, cerca l'obiezione più forte, dichiara la confidenza, mette sotto stress i piani e tiene traccia di ciò che hai deciso per confrontarlo, più avanti, con ciò che è successo davvero.
+A plugin for Claude Code and the Claude desktop app that turns Claude into an analytical decision advisor: it checks premises, looks for the strongest objection, states its confidence, stress-tests plans and keeps track of what you decided so you can later compare it with what actually happened.
 
-Il repository contiene due versioni dello stesso plugin, con contenuti equivalenti:
+This repository contains two versions of the same plugin, with equivalent content:
 
-| Versione | Cartella | Nome del plugin | Comandi |
+| Version | Folder | Plugin name | Commands |
 |---|---|---|---|
-| Italiano | [`plugins/vanta`](plugins/vanta) | `vanta` | `/vanta:metodo`, `/vanta:punto-nave`, … |
 | English | [`plugins/vanta-en`](plugins/vanta-en) | `vanta-en` | `/vanta-en:method`, `/vanta-en:position-fix`, … |
+| Italiano | [`plugins/vanta`](plugins/vanta) | `vanta` | `/vanta:metodo`, `/vanta:punto-nave`, … |
 
-Installane **una sola**: entrambe hanno un hook di avvio e usano la stessa cartella `.vanta/`, quindi installate insieme farebbero il lavoro due volte.
+Install **only one**: both have a startup hook and use the same `.vanta/` folder, so installed together they would do the work twice.
 
-> Stato: versione 0.1.0, sperimentale. Il metodo segue le raccomandazioni attuali di Anthropic sul prompting e la letteratura su persona, brevità e autocorrezione, ma non è ancora stato misurato sul campo. La sezione [Verificare che funzioni](#verificare-che-funzioni) spiega come farlo.
+> Status: version 0.1.0, experimental. The method follows Anthropic's current prompting recommendations and the research on personas, brevity and self-correction, but it has not yet been measured in the field. The [Checking that it works](#checking-that-it-works) section explains how to do that.
 
-## Cosa contiene
+## What it contains
 
-| Componente | Comando | A cosa serve |
+| Component | Command | Purpose |
 |---|---|---|
-| Skill `metodo` | `/vanta:metodo` | Analisi critica con priorità esplicite (accuratezza > utilità > forma), checklist di ragionamento, confidenza Alta/Media/Bassa |
-| Skill `punto-nave` | `/vanta:punto-nave` | Fotografia dello stato del lavoro, salvata in `.vanta/punto-nave.md` |
-| Skill `stress-test` | `/vanta:stress-test [piano] [indipendente]` | Pre-mortem: cinque cause di fallimento con segnali precoci e contromisure |
-| Skill `wargame` | `/vanta:wargame [scenario] [rapido]` | Simulazione Rosso contro Blu con agenti separati e sintesi finale |
-| Skill `decisione` | `/vanta:decisione [scelta]` | Registro decisioni con previsione verificabile e data di revisione |
-| Skill `revisione` | `/vanta:revisione [ID \| tutte]` | Confronto tra previsioni ed esiti, con calibrazione per livello di confidenza |
-| Agente `nemesi` (Opus) | — | Critico indipendente a contesto pulito |
-| Agenti `rosso` e `blu` (Sonnet) | — | Avversario e difensore nel wargame |
-| Stile di output `V.A.N.T.A.` | `/config` → Output style | Il tono asciutto e le priorità del metodo in ogni risposta, attivabile a scelta |
-| Hook di avvio | automatico | Ricarica l'ultimo Punto Nave e ricorda le decisioni da rivedere |
+| `method` skill | `/vanta-en:method` | Critical analysis with explicit priorities (accuracy > usefulness > form), reasoning checklist, High/Medium/Low confidence |
+| `position-fix` skill | `/vanta-en:position-fix` | Snapshot of the work status, saved to `.vanta/position-fix.md` |
+| `stress-test` skill | `/vanta-en:stress-test [plan] [independent]` | Pre-mortem: five causes of failure with early signals and countermeasures |
+| `wargame` skill | `/vanta-en:wargame [scenario] [quick]` | Red versus Blue simulation with separate agents and a final synthesis |
+| `decision` skill | `/vanta-en:decision [choice]` | Decision log with a verifiable prediction and a review date |
+| `review` skill | `/vanta-en:review [ID \| all]` | Compares predictions with outcomes, with calibration by confidence level |
+| `nemesis` agent (Opus) | — | Independent critic with a clean context |
+| `red` and `blue` agents (Sonnet) | — | Adversary and defender in the wargame |
+| `V.A.N.T.A.` output style | `/config` → Output style | The method's dry tone and priorities in every answer, opt-in |
+| Startup hook | automatic | Reloads the latest Position Fix and reminds you of decisions due for review |
 
-Nella chat puoi anche attivare le skill scrivendo la parola chiave all'inizio del messaggio: `V.A.N.T.A.`, `PUNTO NAVE` (o `STOP`), `STRESS TEST`, `WARGAME`, `DECISIONE`, `REVISIONE`.
+In chat you can also trigger the skills by starting your message with a keyword: `V.A.N.T.A.`, `POSITION FIX` (or `STOP`), `STRESS TEST`, `WARGAME`, `DECISION`, `REVIEW`.
 
-## Vantaggi rispetto a un prompt incollato
+## Why a plugin instead of a pasted prompt
 
-- **Memoria reale.** Punto Nave e registro decisioni sono file nella cartella del progetto. All'avvio di ogni sessione il plugin li ricarica da solo: niente da ricopiare, niente che si perde chiudendo la chat.
-- **Critica davvero indipendente.** L'autocritica nella stessa conversazione è debole, perché il modello rilegge il proprio ragionamento con gli stessi punti ciechi. `nemesi` lavora in un contesto separato e vede solo il piano, non come ci sei arrivato.
-- **Avversario vero nel wargame.** Rosso e Blu sono agenti distinti, con istruzioni e obiettivi opposti. Le due parti non condividono il punto di vista, come invece succede quando un solo modello le interpreta entrambe.
-- **Calibrazione misurabile.** Il registro decisioni confronta ciò che prevedevi con ciò che è successo e calcola quanto spesso hai ragione a ciascun livello di confidenza. È l'unico modo di sapere se la tua sicurezza è affidabile, e nessun prompt da solo può farlo.
-- **Costi sotto controllo.** Le skill entrano nel contesto solo quando servono (prima viene caricata solo la descrizione). Il wargame parte solo su richiesta esplicita, e stress test e wargame hanno una modalità economica. L'hook non stampa nulla nelle cartelle senza `.vanta/`.
-- **Modelli giusti per ruolo.** Opus dove la qualità del ragionamento pesa di più (la critica), Sonnet per le simulazioni.
-- **Metodo basato su evidenze.** Niente persona decorative, divieti assoluti o percentuali di confidenza inventate: la sezione [Scelte di progetto](#scelte-di-progetto) spiega cosa è stato tenuto e cosa no.
-- **Versionabile e condivisibile.** Si installa con due comandi, si aggiorna da GitHub e il registro decisioni può stare sotto controllo di versione insieme al progetto.
+- **Real memory.** The Position Fix and the decision log are files in the project folder. At the start of every session the plugin reloads them by itself: nothing to copy back in, nothing lost when you close the chat.
+- **Truly independent critique.** Self-critique within the same conversation is weak, because the model rereads its own reasoning with the same blind spots. `nemesis` works in a separate context and sees only the plan, not how you got there.
+- **A real adversary in the wargame.** Red and Blue are separate agents, with opposite instructions and goals. The two sides don't share a point of view, as they do when a single model plays both.
+- **Measurable calibration.** The decision log compares what you predicted with what happened and computes how often you are right at each confidence level. It is the only way to know whether your confidence is reliable, and no prompt alone can do it.
+- **Costs under control.** Skills enter the context only when needed (only their description is loaded up front). The wargame starts only on explicit request, and stress test and wargame have a cheap mode. The hook prints nothing in folders without `.vanta/`.
+- **The right model for each role.** Opus where reasoning quality matters most (the critique), Sonnet for the simulations.
+- **Evidence-based method.** No decorative personas, absolute bans or invented confidence percentages: the [Design choices](#design-choices) section explains what was kept and what wasn't.
+- **Versionable and shareable.** It installs with two commands, updates from GitHub, and the decision log can live under version control alongside the project.
 
-## Installazione
+## Installation
 
-### Da GitHub
+### From GitHub
 
 In Claude Code:
 
 ```
 /plugin marketplace add marcodolce904-boop/V.A.N.T.A.
-/plugin install vanta@vanta
+/plugin install vanta-en@vanta
 ```
 
-Per la versione inglese, al secondo comando usa `/plugin install vanta-en@vanta`.
+For the Italian version, use `/plugin install vanta@vanta` as the second command.
 
-### In locale, per provarlo
+### Locally, to try it out
 
 ```bash
-claude --plugin-dir ./plugins/vanta
+claude --plugin-dir ./plugins/vanta-en
 ```
 
-Per verificare la struttura prima di pubblicare:
+To check the structure before publishing:
 
 ```bash
-claude plugin validate ./plugins/vanta
-claude plugin details ./plugins/vanta
+claude plugin validate ./plugins/vanta-en
+claude plugin details ./plugins/vanta-en
 ```
 
-### App desktop
+### Desktop app
 
-Il plugin non contiene eseguibili in `bin/`, quindi è compatibile con l'installazione nell'app desktop. Le skill funzionano ovunque il plugin sia installato; agenti, hook e stile di output dipendono dal supporto dell'ambiente.
+The plugin contains no executables in `bin/`, so it can be installed in the desktop app. Skills work wherever the plugin is installed; agents, hooks and the output style depend on what the environment supports.
 
-## Uso
+## Usage
 
-1. **Attiva lo stile (facoltativo).** `/config` → Output style → `V.A.N.T.A.`, oppure in `settings.json` `"outputStyle": "vanta:V.A.N.T.A."`. Da quel momento ogni risposta segue le priorità del metodo. Se preferisci attivarlo solo quando serve, usa `/vanta:metodo`.
-2. **Lavora normalmente.** Quando una conversazione si allunga o cambia direzione, scrivi `/vanta:punto-nave`.
-3. **Prima di una scelta importante**, `/vanta:stress-test` (pre-mortem) e, se la posta è alta, `/vanta:wargame`.
-4. **Quando decidi**, `/vanta:decisione`, con una previsione misurabile e una data.
-5. **Alla scadenza** il plugin te lo ricorda all'avvio: `/vanta:revisione`.
+1. **Turn on the style (optional).** `/config` → Output style → `V.A.N.T.A.`, or in `settings.json` `"outputStyle": "vanta-en:V.A.N.T.A."`. From then on every answer follows the method's priorities. If you'd rather use it only when needed, use `/vanta-en:method`.
+2. **Work as usual.** When a conversation gets long or changes direction, type `/vanta-en:position-fix`.
+3. **Before an important choice**, `/vanta-en:stress-test` (pre-mortem) and, if the stakes are high, `/vanta-en:wargame`.
+4. **When you decide**, `/vanta-en:decision`, with a measurable prediction and a date.
+5. **When it's due**, the plugin reminds you at startup: `/vanta-en:review`.
 
-Non serve usare tutto ogni volta: per una scelta piccola bastano metodo e decisione. Stress test e wargame hanno senso per le scelte difficili da disfare.
+You don't need everything every time: for a small choice, method and decision are enough. Stress test and wargame make sense for choices that are hard to undo.
 
-### File creati nel progetto
+### Files created in the project
 
 ```
 .vanta/
-├── punto-nave.md          stato corrente
-├── punto-nave-storico.md  versioni precedenti
-└── decisioni.md           registro decisioni
+├── position-fix.md          current status
+├── position-fix-history.md  previous versions
+└── decisions.md             decision log
 ```
 
-Nella versione inglese i file si chiamano `position-fix.md`, `position-fix-history.md` e `decisions.md`. Se il registro contiene informazioni personali o riservate, aggiungi `.vanta/` al `.gitignore` del progetto.
+If the log contains personal or confidential information, add `.vanta/` to the project's `.gitignore`.
 
-## Costi indicativi
+## Indicative costs
 
-| Azione | Costo rispetto a una risposta normale |
+| Action | Cost compared with a normal answer |
 |---|---|
-| Metodo, Punto Nave, decisione, revisione | circa 1x |
-| Stress test standard | circa 1x |
-| Stress test indipendente | circa 2-3x (una chiamata Opus in più) |
-| Wargame rapido | circa 1-2x |
-| Wargame con agenti | circa 3-6x |
+| Method, Position Fix, decision, review | about 1x |
+| Standard stress test | about 1x |
+| Independent stress test | about 2-3x (one extra Opus call) |
+| Quick wargame | about 1-2x |
+| Wargame with agents | about 3-6x |
 
-Sono stime da verificare con l'uso: `/cost` in Claude Code mostra il consumo reale della sessione.
+These are estimates to be checked in use: `/cost` in Claude Code shows the session's real usage.
 
-## Scelte di progetto
+## Design choices
 
-Il plugin nasce dalla revisione di un prompt di sistema più lungo (V.A.N.T.A. v3.0). Cosa è cambiato e perché:
+The plugin comes from a revision of a longer system prompt (V.A.N.T.A. v3.0). What changed and why:
 
-- **Niente identità decorativa.** Le persona nel prompt non migliorano l'accuratezza dei modelli (Zheng et al., 2024; Wharton Generative AI Labs, 2025). Restano le regole operative.
-- **Moduli trasformati in checklist.** Nomi come Sophia, Nemesi e Kairos sono diventati domande di controllo concrete.
-- **Brevità subordinata all'accuratezza.** Le istruzioni di concisione aumentano le risposte errate quando la domanda contiene una premessa falsa (Giskard, benchmark Phare, 2025).
-- **Confidenza a livelli, non in percentuale.** Le percentuali verbalizzate dai modelli sono sistematicamente sovrastimate (Xiong et al., ICLR 2024).
-- **Critica separata dall'autore.** Senza un segnale esterno l'autocorrezione è poco affidabile (Huang et al., ICLR 2024): da qui l'agente `nemesi` a contesto pulito.
-- **Multi-agente solo su richiesta.** I sistemi multi-agente consumano molti più token di una chat (Anthropic, *How we built our multi-agent research system*, 2025) e il dibattito tra agenti non batte in modo affidabile metodi più semplici: per questo è riservato al wargame, dove serve un vero punto di vista avversario.
-- **Pre-mortem.** La tecnica di Gary Klein si basa sulla ricerca sulla "prospective hindsight" (Mitchell, Russo e Pennington, 1989). L'evidenza riguarda il numero di cause individuate più che la loro qualità.
+- **No decorative identity.** Personas in the prompt do not improve model accuracy (Zheng et al., 2024; Wharton Generative AI Labs, 2025). The operating rules remain.
+- **Modules turned into checklists.** Names such as Sophia, Nemesis and Kairos became concrete check questions.
+- **Brevity subordinate to accuracy.** Conciseness instructions increase wrong answers when the question contains a false premise (Giskard, Phare benchmark, 2025).
+- **Confidence in levels, not percentages.** Percentages verbalised by models are systematically overconfident (Xiong et al., ICLR 2024).
+- **Critique separate from the author.** Without an external signal, self-correction is unreliable (Huang et al., ICLR 2024): hence the clean-context `nemesis` agent.
+- **Multi-agent only on request.** Multi-agent systems use far more tokens than a chat (Anthropic, *How we built our multi-agent research system*, 2025) and agent debate does not reliably beat simpler methods: so it is reserved for the wargame, where a genuine adversarial point of view is needed.
+- **Pre-mortem.** Gary Klein's technique rests on research into "prospective hindsight" (Mitchell, Russo and Pennington, 1989). The evidence concerns the number of causes identified more than their quality.
 
-## Verificare che funzioni
+## Checking that it works
 
-Ogni versione contiene sei casi di prova in `evals/` (premessa falsa, obiezione forzata, utente sotto pressione, dati sconosciuti, insistenza senza argomenti, Punto Nave). Si eseguono con:
+Each version contains six test cases in `evals/` (false premise, forced objection, user under pressure, unknown data, insistence without arguments, Position Fix). Run them with:
 
 ```bash
-claude plugin eval ./plugins/vanta
+claude plugin eval ./plugins/vanta-en
 ```
 
-Il comando confronta le risposte con e senza il plugin e assegna un punteggio con un modello giudice. Ogni caso viene eseguito più volte, quindi consuma crediti: per un primo giro usa `--runs 1`, oppure scegli un solo caso con `--case premessa-falsa`.
+The command compares answers with and without the plugin and scores them with a judge model. Each case runs several times, so it uses credits: for a first pass use `--runs 1`, or pick a single case with `--case false-premise`.
 
-## Struttura del repository
+## Repository layout
 
 ```
-.claude-plugin/marketplace.json   elenca le due versioni
+.claude-plugin/marketplace.json   lists both versions
 plugins/
-├── vanta/      versione italiana
-└── vanta-en/   versione inglese
+├── vanta/      Italian version
+└── vanta-en/   English version
 ```
 
-## Nome
+## Name
 
-"Vanta" è anche il nome di un'azienda software nota. Per uso personale non è un problema; per una diffusione ampia valuta di rinominare il plugin (campo `name` in `plugin.json` e `marketplace.json`).
+"Vanta" is also the name of a well-known software company. For personal use this is not a problem; for wide distribution consider renaming the plugin (`name` field in `plugin.json` and `marketplace.json`).
 
-## Licenza
+## License
 
-MIT. Vedi [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
