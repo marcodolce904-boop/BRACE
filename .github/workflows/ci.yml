@@ -33,3 +33,16 @@ jobs:
         run: sh tests/test_hooks.sh
       - name: Unit tests (macOS)
         run: python3 -m unittest discover -s tests -v
+
+  hooks-windows:
+    # Claude Code runs shell-form hooks through Git Bash on Windows.
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hook tests (Windows, Git Bash)
+        run: sh tests/test_hooks.sh
+      - name: Windows paths and line endings
+        run: bash tests/test_hooks_windows.sh

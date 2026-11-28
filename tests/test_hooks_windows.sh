@@ -43,8 +43,9 @@ for p in brace brace-it; do
     winroot="$root/plugins/$p"
   fi
   # The command string exactly as written in hooks.json, JSON escapes removed.
-  cmd=$(grep '"command"' "$root/plugins/$p/hooks/hooks.json" \
+  cmd=$(grep '"command":' "$root/plugins/$p/hooks/hooks.json" \
     | sed 's/.*"command": "//; s/",\{0,1\}$//; s/\\"/"/g')
+  # shellcheck disable=SC2016 # the literal placeholder text, not an expansion
   placeholder='${CLAUDE_PLUGIN_ROOT}'
   cmd=${cmd//"$placeholder"/$winroot}
   out=$(cd "$tmp" && CLAUDE_PROJECT_DIR="$winproj" BRACE_TODAY=2026-12-01 bash -c "$cmd" 2>&1)
