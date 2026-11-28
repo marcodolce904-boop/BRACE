@@ -92,9 +92,9 @@ Ogni skill rileva ciò che l'ambiente sa fare e usa il percorso più ricco dispo
 | Parte | macOS | Linux | Windows |
 |---|---|---|---|
 | Skill e agenti (chat, app desktop, Claude Code, Cowork) | ✅ | ✅ | ✅ |
-| Hook di avvio (Claude Code, Cowork) | ✅ | ✅ | richiede una `sh` POSIX, come quella di Git for Windows o WSL; non ancora testato |
+| Hook di avvio (Claude Code, Cowork) | ✅ | ✅ | ✅ con Git for Windows (Git Bash), che Claude Code usa per eseguire gli hook |
 
-Tutto tranne l'hook di avvio è Markdown, quindi funziona ovunque giri Claude. L'hook è uno script `sh` POSIX; la CI ne esegue i test su Linux e su macOS.
+Tutto tranne l'hook di avvio è Markdown, quindi funziona ovunque giri Claude. L'hook è uno script `sh` POSIX; la CI ne esegue i test su Linux, su macOS e su Windows con Git Bash, anche con percorsi in stile Windows che contengono spazi. Senza Git Bash, Claude Code esegue gli hook in PowerShell e l'hook di BRACE non parte: tutto il resto funziona, mancano solo il ricaricamento automatico del Punto Nave e il promemoria delle revisioni.
 
 ## Memoria in chat
 

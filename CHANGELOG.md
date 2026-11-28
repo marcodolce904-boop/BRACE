@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.3 · 2026-11-28
+
+- Windows: shell scripts keep LF line endings on every checkout (`.gitattributes`), so the startup hook also works when Git converts line endings · Windows: gli script mantengono i fine riga LF su ogni checkout, così l'hook di avvio funziona anche quando Git converte i fine riga.
+- CI now runs the hook tests on Linux, macOS and Windows (Git Bash, Windows-style paths with spaces) · La CI esegue i test dell'hook su Linux, macOS e Windows (Git Bash, percorsi Windows con spazi).
+- README: operating systems section · README: sezione sui sistemi operativi.
+
 ## 0.2.2 · 2026-11-22
 
 - Method now also starts when the user is overwhelmed and under pressure and asks what to do, without any keyword (found in real use: it did not trigger in chat) · Il metodo ora parte anche quando l'utente è sotto pressione e chiede cosa fare, senza parole chiave (emerso nell'uso reale: in chat non si attivava).
