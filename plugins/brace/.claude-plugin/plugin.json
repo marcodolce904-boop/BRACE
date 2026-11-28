@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "brace",
   "displayName": "BRACE",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Analytical decision advisor: evidence-based critical method, persistent Position Fix, stress test (pre-mortem), Red/Blue wargame, decision log with review and calibration.",
   "author": {
     "name": "Marco Dolce"

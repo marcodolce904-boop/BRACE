@@ -92,9 +92,9 @@ Each skill detects what the environment can do and uses the richest path availab
 | Part | macOS | Linux | Windows |
 |---|---|---|---|
 | Skills and agents (chat, desktop app, Claude Code, Cowork) | ✅ | ✅ | ✅ |
-| Startup hook (Claude Code, Cowork) | ✅ | ✅ | needs a POSIX `sh`, such as the one in Git for Windows or WSL; not yet tested |
+| Startup hook (Claude Code, Cowork) | ✅ | ✅ | ✅ with Git for Windows (Git Bash), which Claude Code uses to run hooks |
 
-Everything except the startup hook is plain Markdown, so it works wherever Claude runs. The hook is a POSIX `sh` script; CI runs its tests on Linux and on macOS.
+Everything except the startup hook is plain Markdown, so it works wherever Claude runs. The hook is a POSIX `sh` script; CI runs its tests on Linux, on macOS and on Windows under Git Bash, including Windows-style paths with spaces. Without Git Bash, Claude Code runs hooks in PowerShell and the BRACE hook does not start: everything else works, only the automatic reload of the Position Fix and the review reminder are missing.
 
 ## Memory in chat
 
