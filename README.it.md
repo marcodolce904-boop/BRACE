@@ -87,6 +87,15 @@ Ogni skill rileva ciò che l'ambiente sa fare e usa il percorso più ricco dispo
 | Ripresa automatica e promemoria revisioni | no | sì | sì |
 | Stile di output, comandi slash | solo slash | solo slash | entrambi |
 
+## Sistemi operativi
+
+| Parte | macOS | Linux | Windows |
+|---|---|---|---|
+| Skill e agenti (chat, app desktop, Claude Code, Cowork) | ✅ | ✅ | ✅ |
+| Hook di avvio (Claude Code, Cowork) | ✅ | ✅ | richiede una `sh` POSIX, come quella di Git for Windows o WSL; non ancora testato |
+
+Tutto tranne l'hook di avvio è Markdown, quindi funziona ovunque giri Claude. L'hook è uno script `sh` POSIX; la CI ne esegue i test su Linux e su macOS.
+
 ## Memoria in chat
 
 La chat non ha una cartella di progetto, quindi BRACE tiene la memoria in un Progetto di Claude:
