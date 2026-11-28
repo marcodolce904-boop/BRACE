@@ -87,6 +87,15 @@ Each skill detects what the environment can do and uses the richest path availab
 | Automatic resume and due-review reminder | no | yes | yes |
 | Output style, slash commands | slash only | slash only | both |
 
+## Operating systems
+
+| Part | macOS | Linux | Windows |
+|---|---|---|---|
+| Skills and agents (chat, desktop app, Claude Code, Cowork) | ✅ | ✅ | ✅ |
+| Startup hook (Claude Code, Cowork) | ✅ | ✅ | needs a POSIX `sh`, such as the one in Git for Windows or WSL; not yet tested |
+
+Everything except the startup hook is plain Markdown, so it works wherever Claude runs. The hook is a POSIX `sh` script; CI runs its tests on Linux and on macOS.
+
 ## Memory in chat
 
 Chat has no project folder, so BRACE keeps its memory in a Claude Project:
